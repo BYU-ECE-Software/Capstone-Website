@@ -14,7 +14,7 @@ router.post('/saml/callback',
         failureFlash: true, // what this do?
     }),
     (req, res) => {
-        res.redirect('/'); // where do we want to send the user after a successful login?
+        res.redirect('/'); // where do we want to send the user after a successful login? Is this where we'd put the logic to add the user to the DB after first login?
     }
 );
 

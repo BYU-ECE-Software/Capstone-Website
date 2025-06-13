@@ -17,12 +17,11 @@ const samlStrategy = new SamlStrategy(
         entryPoint: samlConfig.entryPoint,
         issuer: samlConfig.issuer,
 
-        /*
-        cert: fs.readFileSync(path.resolve(__dirname, '..', samlConfig.idpCertPath), 'utf-8'),
-        //privateKey: fs.existsSync(path.resolve(__dirname, '..', samlConfig.privateKeyPath), 'utf-8') //privateCert instead of privateKey???
+
+        cert: '-----BEGIN CERTIFICATE-----\nFAKECERT\n-----END CERTIFICATE-----', //fs.readFileSync(path.resolve(__dirname, '..', samlConfig.idpCertPath), 'utf-8'),
+        privateKey: fs.existsSync(path.resolve(__dirname, '..', samlConfig.privateKeyPath), 'utf-8') //privateCert instead of privateKey???
             ? fs.readFileSync(path.resolve(__dirname, '..', samlConfig.privateKeyPath), 'utf-8')
             : null,
-        */
     },
     (profile, done) => {
         //console.log('SAML Profile:', profile);

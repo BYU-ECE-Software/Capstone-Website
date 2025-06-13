@@ -34,3 +34,8 @@ const users = [
 exports.findById = (id) => {
     return users[id - 1];
 };
+
+// this too will be replaced once db is set up
+exports.findAll = () => {
+    return users;
+}

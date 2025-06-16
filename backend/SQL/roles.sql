@@ -1,6 +1,8 @@
-CREATE TABLE roles (
+USE capstone;
+
+CREATE TABLE IF NOT EXISTS roles (
     role_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    role_name NVARCHAR(255) NOT NULL,
+    role_name NVARCHAR(255) NOT NULL
     -- figure out how to link this to permissions. Talk to Roman
 );
 

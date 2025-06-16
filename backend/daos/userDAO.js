@@ -1,41 +1,32 @@
-// TODO setup DB
+const connection = require('../db/connection');
 
-// for now we'll just use memory to test the endpoints
-const users = [
-    {
-        id: 1,
-        first_name: "Mason",
-        last_name: "Lewis",
-        preferred_name: null,
-        major: 1, // 1 could be Mech engineering. Or anything
-        net_id: "mlewis", // not actually my net id
-        byu_id: 123456789, // neither
-        email: "mlewis@byu.edu",
-        team_id: 1,
-        role_id: 1, // admin?
-        phone: "015554681357"
-    },
-    {
-        id: 2,
-        first_name: "Jerry",
-        last_name: "Seinfeld",
-        preferred_name: null,
-        major: 1, // 1 could be Mech engineering. Or anything
-        net_id: "jersein", // not actually my net id
-        byu_id: 223456789, // neither
-        email: "jersien@byu.edu",
-        team_id: 1,
-        role_id: 2, // coach?
-        phone: "015553572468"
-    }
-];
+function getUserById(id, callback) {
+  connection.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
+    if (err) return callback(err);
+    callback(null, results[0]);
+  });
+}
 
-// this function will be replaced by an actual DB query
-exports.findById = (id) => {
-    return users[id - 1];
+
+
+
+// given a user id, return a dictionary of their info
+exports.findById = (id, callback) => {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM users WHERE user_id = ?', [id], (err, results) => {
+        if (err) return reject(err);
+        resolve(results[0]);
+        });
+    });
 };
 
 // this too will be replaced once db is set up
-exports.findAll = () => {
-    return users;
+exports.findAll = (callback) => {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM users', (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+    
 }

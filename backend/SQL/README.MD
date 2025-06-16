@@ -1,6 +1,8 @@
 # SQL Folder
 This folder is to temporarily (or permanantly) house the SQL code that we will use to setup our database and tables until we get a test server up and running.
 
+Make sure to have a local db.properties file in the backend directory. It is ignored in version control. It should contain host, port, user, password, and name
+I'll put an explanation page on the wiki.
 
 # NOTES:
 SAML

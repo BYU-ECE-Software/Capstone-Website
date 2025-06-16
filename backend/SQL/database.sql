@@ -1,4 +1,4 @@
-CREATE DATABASE capstone;
+CREATE DATABASE IF NOT EXISTS capstone;
 
 -- CREATE DATABASE test; -- maybe we want this for something?
 

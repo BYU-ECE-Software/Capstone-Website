@@ -1,0 +1,7 @@
+{
+  "callbackUrl": "http://localhost:3000/saml/callback",
+  "entryPoint": "<byu's idp>/sso/saml",
+  "issuer": "capstone-website",
+  "idpCertPath": "./certs/idp-public.crt",
+  "privateKeyPath": "./certs/sp-private.key"
+}

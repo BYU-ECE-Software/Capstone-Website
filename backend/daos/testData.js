@@ -7,30 +7,45 @@
 // user test data
 const users = [
     {
-        first_name: "Mason",
-        last_name: "Lewis",
+        first_name: "Jansen",
+        last_name: "Mewis",
         preferred_name: null,
         major: 1, // 1 could be Mech engineering. Or anything
-        net_id: "mlewis", // not actually my net id
+        net_id: "jmewis", // not actually my net id
         byu_id: 123456789, // neither
-        email: "mlewis@byu.edu",
-        team_id: 1,
+        email: "jmewis@byu.edu",
+        team_id: 2,
         role_id: 1, // admin?
         phone: "015554681357",
         photo: "./assets/user_1.jpg"
     },
     {
-        first_name: "Jerry",
-        last_name: "Seinfeld",
+        first_name: "Darry",
+        last_name: "Meinfeld",
         preferred_name: null,
         major: 1, // 1 could be Mech engineering. Or anything
-        net_id: "jersein", // not actually my net id
+        net_id: "dermein", // not actually my net id
         byu_id: 223456789, // neither
         email: "jersien@byu.edu",
-        team_id: 1,
+        team_id: 2,
         role_id: 2, // coach?
         phone: "015553572468",
         photo: "./assets/user_2.jpg"
+    }
+];
+
+const teams = [
+    {
+        school_year: '2025-2026',
+        coach_id: 6, // brother seinfeld
+        long_distance_access_code: 1, //?
+        caedm_group_folder: 37,
+        project_id: 1,
+        logo: "./assets/team_1.jpg",
+        team_name: "The Second Best in the World",
+        email_list: "['test@email.com', 'test2@email.com']",
+        team_box_folder: 6290,
+        class_doc_folder: 7248
     }
 ];
 
@@ -59,7 +74,10 @@ function insertLine(tableName, data) {
 
 function createTestData() {
     for (let i = 0; i < users.length; i++) {
-        insertLine("users", users[i]);
+        //insertLine("users", users[i]); // uncomment to append the contents of the users dictionary to the users table
+    }
+    for (let i = 0; i < teams.length; i++) {
+        insertLine("teams", teams[i]); // uncomment to append the contents of the teams dictionary to the teams table
     }
 }
 

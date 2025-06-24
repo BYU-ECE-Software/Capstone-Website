@@ -27,6 +27,9 @@ app.use('/auth', authRoutes);
 // register user routes
 const userRoutes = require('./routes/users');
 app.use('/users', userRoutes);
+// register team routes
+const teamRoutes = require('./routes/teams');
+app.use('/teams', teamRoutes);
 
 app.get('/', (req, res) => {
     // find how to connect this to React. But for now this barebones will work for testing. We will need to make sure to use cookies on the frontend

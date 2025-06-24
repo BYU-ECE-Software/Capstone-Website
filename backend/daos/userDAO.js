@@ -1,14 +1,5 @@
 const connection = require('../db/connection');
 
-function getUserById(id, callback) {
-  connection.query('SELECT * FROM users WHERE id = ?', [id], (err, results) => {
-    if (err) return callback(err);
-    callback(null, results[0]);
-  });
-}
-
-
-
 
 // given a user id, return a dictionary of their info
 exports.findById = (id, callback) => {

@@ -1,0 +1,36 @@
+/* USE THIS FILE FOR ALL BYU SPECIFIC STYLING*/
+
+p {
+    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+    font-weight: 425;
+}
+
+b {
+    font-weight: 600;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "IBM Plex Sans", Helvetica, Arial, sans-serif;
+    color: var(--navy);
+}
+
+h2 {
+    font-weight: 650;
+}
+
+h3 {
+    font-weight: 640;
+}
+
+h4 {
+    font-weight: 600;
+}
+
+h5 {
+    font-weight: 500;
+}
+
+h6 {
+    font-weight: 475;
+    font-style: italic;
+}

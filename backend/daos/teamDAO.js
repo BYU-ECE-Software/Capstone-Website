@@ -69,8 +69,18 @@ exports.findById = (id, callback) => {
     // });
 };
 
-
+/** So, thinking about this function, it might not be necessary to pull all the data, we might just need a list of all the PKs (filtered by school year)
+ * Then we'll just iteratively call the other endpoint to get the individual data for each team.
+ */
 exports.findAll = async (callback) => {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT team_id FROM teams', (err, results) => { // add a school year filter later
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+
+    // get rid of this code if the above works
     const teamSql = `SELECT
         teams.team_id,
         teams.team_name,

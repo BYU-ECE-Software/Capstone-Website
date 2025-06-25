@@ -4,6 +4,12 @@ import TeamsLayout from './pages/TeamsLayout';
 import TeamsDirectory from './pages/TeamsDirectory';
 import TeamProfile from './pages/TeamProfile';
 
+import './App.css';
+
+// import our BYU styling
+import './styles/variables.css';
+import './styles/global.css';
+
 function App() {
   return (
     <div className="App">

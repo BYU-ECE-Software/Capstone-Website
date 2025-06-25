@@ -14,10 +14,10 @@ const users = [
         net_id: "jmewis", // not actually my net id
         byu_id: 123456789, // neither
         email: "jmewis@byu.edu",
-        team_id: 2,
+        team_id: 1,
         role_id: 1, // admin?
         phone: "015554681357",
-        photo: "./assets/user_1.jpg"
+        photo: "user_1.jpg"
     },
     {
         first_name: "Darry",
@@ -27,10 +27,36 @@ const users = [
         net_id: "dermein", // not actually my net id
         byu_id: 223456789, // neither
         email: "jersien@byu.edu",
-        team_id: 2,
+        team_id: 1,
         role_id: 2, // coach?
         phone: "015553572468",
-        photo: "./assets/user_2.jpg"
+        photo: "user_2.jpg"
+    },
+    {
+        first_name: "Jerry",
+        last_name: "Seinfeld",
+        preferred_name: null,
+        major: 1, // 1 could be Mech engineering. Or anything
+        net_id: "jersein", // not actually my net id
+        byu_id: 223456789, // neither
+        email: "jersien@byu.edu",
+        team_id: 1,
+        role_id: 1, // coach?
+        phone: "015553572468",
+        photo: "user_2.jpg"
+    },
+    {
+        first_name: "Mason",
+        last_name: "Lewis",
+        preferred_name: null,
+        major: 1, // 1 could be Mech engineering. Or anything
+        net_id: "mlewis", // not actually my net id
+        byu_id: 223456789, // neither
+        email: "mlewis@byu.edu",
+        team_id: 1,
+        role_id: 1,
+        phone: "015553572468",
+        photo: "user_1.jpg"
     }
 ];
 
@@ -74,10 +100,10 @@ function insertLine(tableName, data) {
 
 function createTestData() {
     for (let i = 0; i < users.length; i++) {
-        //insertLine("users", users[i]); // uncomment to append the contents of the users dictionary to the users table
+        insertLine("users", users[i]); // uncomment to append the contents of the users dictionary to the users table
     }
     for (let i = 0; i < teams.length; i++) {
-        insertLine("teams", teams[i]); // uncomment to append the contents of the teams dictionary to the teams table
+        //insertLine("teams", teams[i]); // uncomment to append the contents of the teams dictionary to the teams table
     }
 }
 

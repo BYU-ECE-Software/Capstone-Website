@@ -14,12 +14,14 @@ export default function TeamProfile({ team_id=0 }) {
     useEffect(() => {
         fetch(`/teams/${final_id}`)
         .then((res) => res.json())
-        .then(setTeam)
+        .then((data) => {
+                setTeam(data);
+        })
         .catch((err) => console.error('Error fetching team:', err));
     }, [final_id]);
 
-
     if (!team) return <p>Loading...</p>;
+    if (team.error) return <p>Team not found</p>
 
     // maybe I'll want to move this code to a team component and then just call it from here with the url param, and from teamsdirectory and input the team_id of each array item
     return (
@@ -35,7 +37,7 @@ export default function TeamProfile({ team_id=0 }) {
                 </div>) : (<p>No coach assigned to team</p>)
             }
             <div id="students">
-                {team.students.length > 0 ? (team.students.map((student) => (
+                {(team.students.length > 0 && team.students) ? (team.students.map((student) => (
                     <UserTeamLine key={student.user_id} student={student} />
                 ))) : (<p>No students assigned team</p>)}
             </div>

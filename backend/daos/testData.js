@@ -103,8 +103,9 @@ function createTestData() {
         insertLine("users", users[i]); // uncomment to append the contents of the users dictionary to the users table
     }
     for (let i = 0; i < teams.length; i++) {
-        //insertLine("teams", teams[i]); // uncomment to append the contents of the teams dictionary to the teams table
+        insertLine("teams", teams[i]); // uncomment to append the contents of the teams dictionary to the teams table
     }
+    console.log("Finished inserting test data into database");
 }
 
 if (require.main === module) {

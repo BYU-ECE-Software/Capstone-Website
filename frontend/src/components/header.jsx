@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import BYULogo from '../BYU_monogram_white.svg';
+import './header.css';
 
 export default function Header() {
     return (
@@ -15,7 +16,7 @@ export default function Header() {
                 >
                 <img src={BYULogo} alt="Logo" className="h-10 w-auto" />
                 </a>
-                <h1 className="text-2xl">CAPSTONE</h1>
+                <a href="/"><h1 className="text-2xl">Capstone</h1></a>
             </div>
             </header>
 

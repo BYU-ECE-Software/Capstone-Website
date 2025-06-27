@@ -1,12 +1,13 @@
-.App {
- 
-  margin: auto;
-  width: 75%;
-  padding: 10px;
-  display: block;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-sans;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+input,
+select,
+textarea {
+  @apply focus:outline-none focus:border-byuNavy focus:ring-1 focus:ring-byuNavy;
 }

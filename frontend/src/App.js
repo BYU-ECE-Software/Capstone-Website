@@ -17,7 +17,6 @@ function App() {
   return (
     <div className="App">
       <Header/>
-
       <Routes>
         <Route path="/teams" element={<TeamsLayout />}>
           <Route index element={<TeamsDirectory />} />
@@ -27,7 +26,6 @@ function App() {
         </Route>
         {/* Add 404 route and home page route. Also build those pages */}
       </Routes>
-
       <Footer/>
     </div>
   );

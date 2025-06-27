@@ -42,12 +42,12 @@ export default function Footer() {
                     </li>
                     <li>
                     <a
-                        href="https://www.ece.byu.edu"
+                        href="https://www.me.byu.edu"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:underline text-white"
                     >
-                        ECE Department
+                        ME Department
                     </a>
                     </li>
                 </ul>

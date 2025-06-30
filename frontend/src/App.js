@@ -12,6 +12,7 @@ import './App.css';
 // import our BYU styling
 import './styles/variables.css';
 import './styles/global.css';
+import EditTeam from './pages/EditTeam';
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
           <Route index element={<TeamsDirectory />} />
           <Route path=":id" element={<TeamProfile />} />
           <Route path="create" element={<CreateTeam />} />
-          <Route path="edit/:id" element={<CreateTeam />} />
+          <Route path="edit/:id" element={<EditTeam />} />
         </Route>
         {/* Add 404 route and home page route. Also build those pages */}
       </Routes>

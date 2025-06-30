@@ -20,6 +20,7 @@ export default function TeamProfile({ team_id=0 }) {
         .catch((err) => console.error('Error fetching team:', err));
     }, [final_id]);
 
+    console.log(team);
     if (!team) return <p>Loading...</p>;
     if (team.error) return <p>Team not found</p>
 
@@ -27,7 +28,7 @@ export default function TeamProfile({ team_id=0 }) {
     return (
         <div>
             <h1 className='"text-4xl text-byuNavy font-semibold mb-4'>Team {final_id}</h1>
-            <img alt={final_id} src={`http://localhost:3001/assets/${team.team.logo}`} className='team-logo'/>
+            <img alt={final_id} src={`http://localhost:3001/assets/${team.logo}`} className='team-logo'/>
             {!!team.coach ?
                 (<div id="coach-info">
                     <p><b>Coach: </b>{team.coach.first_name + " " + team.coach.last_name}</p>
@@ -41,7 +42,6 @@ export default function TeamProfile({ team_id=0 }) {
                     <UserTeamLine key={student.user_id} student={student} />
                 ))) : (<p>No students assigned team</p>)}
             </div>
-
         </div>
     );
 }

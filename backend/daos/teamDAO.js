@@ -9,45 +9,53 @@ exports.findById = (id, callback) => {
         FROM teams
         WHERE teams.team_id = ?
         GROUP BY teams.team_id, teams.team_name;`;
-    const coachSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
-    const coachRole = 2;
-    const studentSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
-    const studentRole = 1;
 
     return new Promise((resolve, reject) => {
-        // run each individual query
-        const teamPromise = new Promise((resolve, reject) => {
-            connection.query(teamSql, [id], (err, results) => {
-                if (err) return reject(err);
-                resolve(results[0]);
-            });
+        connection.query(teamSql, [id], (err, results) => {
+            if (err) return reject(err);
+            //console.log(results);
+            resolve(results[0]);
         });
-
-        const coachPromise = new Promise((resolve, reject) => {
-            connection.query(coachSql, [id, coachRole], (err, results) => {
-                if (err) return reject(err);
-                resolve(results[0]);
-            });
-        });
-
-        const studentPromise = new Promise((resolve, reject) => {
-            connection.query(studentSql, [id, studentRole], (err, results) => {
-                if (err) return reject(err);
-                if (results.length > 0) {
-                    resolve(results);
-                } else {
-                    resolve(results[0]);
-                }
-            });
-        });
-
-        // Resolve everything together
-        Promise.all([teamPromise, coachPromise, studentPromise])
-            .then(([team, coach, students]) => {
-                resolve({team, coach, students})
-            })
-            .catch(reject);
     });
+    // const coachSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
+    // const coachRole = 2;
+    // const studentSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
+    // const studentRole = 1;
+
+    // return new Promise((resolve, reject) => {
+    //     // run each individual query
+    //     const teamPromise = new Promise((resolve, reject) => {
+    //         connection.query(teamSql, [id], (err, results) => {
+    //             if (err) return reject(err);
+    //             resolve(results[0]);
+    //         });
+    //     });
+
+    //     const coachPromise = new Promise((resolve, reject) => {
+    //         connection.query(coachSql, [id, coachRole], (err, results) => {
+    //             if (err) return reject(err);
+    //             resolve(results[0]);
+    //         });
+    //     });
+
+    //     const studentPromise = new Promise((resolve, reject) => {
+    //         connection.query(studentSql, [id, studentRole], (err, results) => {
+    //             if (err) return reject(err);
+    //             if (results.length > 0) {
+    //                 resolve(results);
+    //             } else {
+    //                 resolve(results[0]);
+    //             }
+    //         });
+    //     });
+
+    //     // Resolve everything together
+    //     Promise.all([teamPromise, coachPromise, studentPromise])
+    //         .then(([team, coach, students]) => {
+    //             resolve({team, coach, students})
+    //         })
+    //         .catch(reject);
+    // });
 };
 
 /** So, thinking about this function, it might not be necessary to pull all the data, we might just need a list of all the PKs (filtered by school year)

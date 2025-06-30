@@ -5,6 +5,7 @@ exports.getTeamById = async (req, res) => {
         const teamId = req.params.teamId;
         const team = await teamService.getTeamById(teamId);
 
+        console.log(team);
         if (!team) { // I assume this is the same as a not null check in JS
             return res.status(404).json({ error: 'Team not found' });
         }

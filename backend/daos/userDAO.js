@@ -26,7 +26,7 @@ exports.findAllStudents = (callback) => {
     // there should be in another branch another function that uses the studentRole variable. Put them together when merges happen.
     const studentRole = 2;
     return new Promise((resolve, reject) => {
-        connection.query('SELECT * FROM users WHERE role_id = ?', [studentRole], (err, results) => {
+        connection.query('SELECT * FROM users WHERE role_id = ? AND team_id IS NULL', [studentRole], (err, results) => {
             if (err) return reject(err);
             resolve(results);
         });

@@ -1,6 +1,5 @@
 const connection = require('../db/connection');
 
-
 // given a user id, return a dictionary of their info
 exports.findById = (id, callback) => {
     return new Promise((resolve, reject) => {

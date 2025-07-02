@@ -1,4 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import { fetchAllStudents } from '../api/endpointCalls';
+import Select from 'react-select';
+import CustomSelect from './custom_select/customSelect';
 
 export default function TeamForm({ initialData = {}, onSubmit}) {
     const [formData, setFormData] = useState({
@@ -25,10 +28,25 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
     });
     
     const [allStudents, setAllStudents] = useState([]);
+    const [selectedStudent, setSelectedStudent] = useState(null);
 
+    
     useEffect(() => {
-        fetchAllStuden
+        fetchAllStudents()
+        .then((data) => {
+            setAllStudents(data);
+        })
+        .catch((err) => console.error(err));
     });
+    const studentOptions = useMemo(() => allStudents.filter(s => !formData.students.some(fs => fs.user_id === s.user_id))
+        .map(student => ({
+            value: student.user_id,
+            label: `${student.prefered_name ? student.prefered_name : student.first_name} ${student.last_name}`,
+        })),
+        [allStudents, formData.students]
+    );
+
+
 
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
@@ -55,19 +73,22 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
         }));
     };
 
-    const handleStudentChange = (index, field, value) => {
-        setFormData((prev) => {
-            const updatedStudents = [...prev.students];
-            updatedStudents[index] = {
-                ...updatedStudents[index],
-                [field]: value
-            };
-            return {
+    const handleAddStudent = useCallback((userId) => {
+        const selected = allStudents.find(s => s.user_id === parseInt(userId));
+        if (selected) {
+            setFormData(prev => ({
                 ...prev,
-                students: updatedStudents
-            };
-        });
-    };
+                students: [...prev.students, selected],
+            }));
+        }
+    }, [allStudents, setFormData]);
+
+    const handleRemoveStudent = (userId) => {
+        setFormData(prev => ({
+            ...prev,
+            students: prev.students.filter(s => s.user_id !== userId),
+        }))
+    }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -80,12 +101,25 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
             <label className="block font-medium">Coach</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="coach" type="text" value={formData.coach} onChange={handleChange} />
-            <label className="block font-medium">Students</label>
-            {formData.students.map((item, index) => (
-                <input className="w-full border border-gray-300 rounded p-2" 
-                name="students" type="text" value={item.first_name + " " + item.last_name} onChange={handleChange} />
-            ))
-            }
+            <div>
+                <label className="block font-medium">Students</label>
+                {formData.students.map((item, index) => (
+                    <div>
+                        <input className="w-full border border-gray-300 rounded p-2" 
+                        name="students" type="text" value={item.first_name + " " + item.last_name} onChange={handleChange} />
+                        <button onClick={() => handleRemoveStudent(item.user_id)}>Remove</button>
+                    </div>
+                ))
+                }
+                <label htmlFor='add-student'>Add Student</label>
+                <CustomSelect
+                    options={studentOptions}
+                    onSelect={(selectedOption) => {
+                        handleAddStudent(selectedOption.value);
+                    }}
+                    placeholder="Select a student to add..." 
+                />
+            </div>
             <label className="block font-medium">Grading Coach One</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="grading_coach_one" type="text" value={formData.team.grading_coach_one} onChange={handleChange} />
@@ -122,9 +156,17 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
             <label className="block font-medium">Team Box Folder</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="team_box_folder" type="text" value={formData.team.team_box_folder} onChange={handleChange} />
+            <button type="submit"
+                className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a]">
+                Build Team Box Folder
+            </button>
             <label className="block font-medium">Class Document Folder</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="class_document_folder" type="text" value={formData.team.class_document_folder} onChange={handleChange} />
+            <button type="submit"
+                className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a]">
+                Build Class Document Folder
+            </button>
             <div className='flex justify-center'>
                 <button type="submit"
                     className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a]">

@@ -8,4 +8,7 @@ router.get('/:userId', userController.getUserById);
 // get all the users
 router.get('/', userController.getAllUsers);
 
+// get all the students
+router.get('/students', userController.getAllStudents);
+
 module.exports = router;

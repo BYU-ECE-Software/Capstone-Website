@@ -18,8 +18,7 @@ export default function EditTeam() {
     const updateTeam = (data) => {
         //call endpoint to put team
     }
-    console.log(id);
-    console.log(team);
+
     if (!team) return <p>Loading...</p>;
     return (
         <div className="max-w-7xl mx-auto mt-4 mb-8 p-6 bg-white shadow-md rounded-md space-y-6">

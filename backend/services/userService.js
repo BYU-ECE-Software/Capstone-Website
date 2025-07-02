@@ -10,3 +10,7 @@ exports.getUserById = async (userId) => {
 exports.getAllUsers = async () => {
     return await userDAO.findAll();
 };
+
+exports.getAllStudents = async () => {
+    return await userDAO.findAllStudents();
+}

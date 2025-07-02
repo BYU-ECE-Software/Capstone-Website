@@ -15,7 +15,7 @@ exports.fetchTeamIds = async () => {
 }
 
 exports.fetchAllStudents = async () => {
-    const response = await fetch(`/users/students`); // TODO, actually build this endpoint. Like the normal users, but with student role in the query
+    const response = await fetch(`/users?role=2`); // prolly don't hardcode
     if (!response.ok) throw new Error('Failed to fetch students');
     return await response.json();
 }

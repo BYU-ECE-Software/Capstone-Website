@@ -57,11 +57,11 @@ export default function Footer() {
                 <div className="text-center">
                 <h1 className="text-xl font-bold">Brigham Young University</h1>
                 <p className="mt-2 text-sm text-white">
-                    450 Engineering Building
+                    344 Engineering Building
                     <br />
                     Provo, UT 84602
                     <br />
-                    (801) 422-4012
+                    (801) 422-4847
                 </p>
                 </div>
 

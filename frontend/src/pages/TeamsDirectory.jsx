@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import TeamProfile from './TeamProfile';
 import PageTitle from '../components/pageTitle';
+import { fetchTeamIds } from '../api/endpointCalls';
 
 export default function TeamDirectory() {
     const [teams, setTeams] = useState(null);
 
     useEffect(() => {
-        fetch(`/teams`)
-        .then((res) => {
-            console.log(res);
-            return res.json();
-        })
+        fetchTeamIds()
         .then((data) => {
             console.log(data);
             setTeams(data);

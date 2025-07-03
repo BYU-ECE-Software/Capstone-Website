@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import UserTeamLine from '../components/users/UserTeamLine';
+import { fetchTeamById } from '../api/endpointCalls';
 
 import './TeamProfile.css';
 
 export default function TeamProfile({ team_id=0 }) {
     const { id } = useParams();
+    const [team, setTeam] = useState(null);
     
     const final_id = !team_id ? id : team_id;
 
-    const [team, setTeam] = useState(null);
-
     useEffect(() => {
-        fetch(`/teams/${final_id}`)
-        .then((res) => res.json())
+        fetchTeamById(final_id)
         .then((data) => {
-                setTeam(data);
+            setTeam(data);
         })
-        .catch((err) => console.error('Error fetching team:', err));
+        .catch((err) => console.error(err));
     }, [final_id]);
 
     console.log(team);

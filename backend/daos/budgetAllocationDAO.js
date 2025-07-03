@@ -43,3 +43,12 @@ exports.findById = (id, callback) => {
  * The "Budget Allocations" page needs:
  * - title (can be constructed with team information. Budget Allocation by [author])?
  */
+
+exports.findAll = async (callback) => {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT budget_allocation_id FROM budget_allocations', (err, results) => { // add a school year filter later
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+}

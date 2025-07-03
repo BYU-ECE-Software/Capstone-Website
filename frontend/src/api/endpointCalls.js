@@ -14,8 +14,16 @@ exports.fetchTeamIds = async () => {
     return await response.json();
 }
 
+// This endpoint returns all students who have NOT been assigned to a team
 exports.fetchAllStudents = async () => {
-    const response = await fetch(`/users?role=2`); // prolly don't hardcode
+    const response = await fetch(`/users?role=1`); // prolly don't hardcode
     if (!response.ok) throw new Error('Failed to fetch students');
+    return await response.json();
+}
+
+// Return all coaches (team or not)
+exports.fetchAllCoaches = async () => {
+    const response = await fetch(`/users?role=2`); // also don't hardcode
+    if (!response.ok) throw new Error('Failed to fetch coaches');
     return await response.json();
 }

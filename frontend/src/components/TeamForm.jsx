@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { fetchAllStudents } from '../api/endpointCalls';
-import Select from 'react-select';
+import { fetchAllStudents, fetchAllCoaches } from '../api/endpointCalls';
 import CustomSelect from './custom_select/customSelect';
 
 export default function TeamForm({ initialData = {}, onSubmit}) {
@@ -28,16 +27,18 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
     });
     
     const [allStudents, setAllStudents] = useState([]);
-    const [selectedStudent, setSelectedStudent] = useState(null);
+    const [allCoaches, setAllCoaches] = useState([]);
 
-    
+    //TODO have the dropdowns sort alphabetically (by netid, username?)
+    //Get a list of all the students who aren't currently assigned to teams
     useEffect(() => {
         fetchAllStudents()
         .then((data) => {
             setAllStudents(data);
         })
         .catch((err) => console.error(err));
-    });
+    }, []);
+    //Set the options for the student dropdown to any unassigned student who hasn't been added yet to this team
     const studentOptions = useMemo(() => allStudents.filter(s => !formData.students.some(fs => fs.user_id === s.user_id))
         .map(student => ({
             value: student.user_id,
@@ -45,23 +46,41 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
         })),
         [allStudents, formData.students]
     );
+    //Get a list of all the students who aren't currently assigned to teams
+    useEffect(() => {
+        fetchAllCoaches()
+        .then((data) => {
+            setAllCoaches(data);
+        })
+        .catch((err) => console.error(err));
+    }, []);
+    //Set the options for the student dropdown to any unassigned student who hasn't been added yet to this team
+    const coachOptions = useMemo(() => allCoaches.filter(s => !formData.coach.some(fs => fs.user_id === s.user_id))
+        .map(indCoach => ({
+            value: indCoach.user_id,
+            label: `${indCoach.prefered_name ? indCoach.prefered_name : indCoach.first_name} ${indCoach.last_name}`,
+        })),
+        [allCoaches, formData.coaches]
+    );
 
-
-
+    //If we are editing (instead of creating) a team, initialize the data to what was already there
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
             setFormData((prev) => ({
                 ...prev,
                 ...initialData,
+                coach: [initialData.coach],
             }));
         }
     }, [initialData]);
 
+    //When the user clicks the submit button, handle accordingly (be it create or update)
     const handleSubmit = (e) => {
         e.preventDefault();
         onSubmit({formData}); //and all the other data things
     };
 
+    //When the user changes a field, change it here in the data
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -73,6 +92,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
         }));
     };
 
+    //If an option is clicked from the dropdown, remove it from the dropdown and add it to the data
     const handleAddStudent = useCallback((userId) => {
         const selected = allStudents.find(s => s.user_id === parseInt(userId));
         if (selected) {
@@ -80,16 +100,49 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
                 ...prev,
                 students: [...prev.students, selected],
             }));
+            setAllStudents(prev => prev.filter(s => s.user_id !== selected.user_id));
         }
-    }, [allStudents, setFormData]);
+    }, [allStudents, setAllStudents, setFormData]);
 
-    const handleRemoveStudent = (userId) => {
+    //If a student is removed from a team, remove them from the team and add them to the dropdown
+    const handleRemoveStudent = useCallback((userId) => {
+        const student = formData.students.find(s => s.user_id === userId);
+        setAllStudents(prev => {
+            if (prev.some(s => s.user_id === userId)) return prev;
+            return [...prev, student];
+        });
         setFormData(prev => ({
             ...prev,
             students: prev.students.filter(s => s.user_id !== userId),
-        }))
-    }
+        }));
+    }, [setAllStudents, formData, setFormData]);
 
+        //If an option is clicked from the dropdown, remove it from the dropdown and add it to the data
+    const handleAddCoach = useCallback((userId) => {
+        const selected = allCoaches.find(s => s.user_id === parseInt(userId));
+        if (selected) {
+            setFormData(prev => ({
+                ...prev,
+                coach: [...prev.coach, selected],
+            }));
+            setAllCoaches(prev => prev.filter(s => s.user_id !== selected.user_id));
+        }
+    }, [allCoaches, setAllCoaches, setFormData]);
+
+    //If a coach is removed from a team, remove them from the team and add them to the dropdown
+    const handleRemoveCoach = useCallback((userId) => {
+        const coach = formData.coach.find(s => s.user_id === userId);
+        setAllCoaches(prev => {
+            if (prev.some(s => s.user_id === userId)) return prev;
+            return [...prev, coach];
+        });
+        setFormData(prev => ({
+            ...prev,
+            coach: prev.coach.filter(s => s.user_id !== userId),
+        }));
+    }, [setAllCoaches, formData, setFormData]);
+
+    //The jsx layout of this component
     return (
         <form onSubmit={handleSubmit}>
             <label className="block font-medium">Team Number</label> {/* Hmmmmm. I've had this just an autogenerated key. Talk to office */}
@@ -98,9 +151,26 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
             <label className="block font-medium">School Year</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="school_year" type="text" value={formData.team.school_year} onChange={handleChange} />
-            <label className="block font-medium">Coach</label>
-            <input className="w-full border border-gray-300 rounded p-2" 
-                name="coach" type="text" value={formData.coach} onChange={handleChange} />
+            <div>
+                <label className="block font-medium">Coach</label>
+                {console.log(formData)}
+                {formData.coach.map((item, index) => (
+                    <div>
+                        <input className="w-full border border-gray-300 rounded p-2" 
+                        name="students" type="text" value={item.first_name + " " + item.last_name} onChange={handleChange} />
+                        <button onClick={() => handleRemoveCoach(item.user_id)}>Remove</button>
+                    </div>
+                ))
+                }
+                <label htmlFor='add-student'>Add Coach</label>
+                <CustomSelect
+                    options={coachOptions}
+                    onSelect={(selectedOption) => {
+                        handleAddCoach(selectedOption.value);
+                    }}
+                    placeholder="Select a coach to add..." 
+                />
+            </div>
             <div>
                 <label className="block font-medium">Students</label>
                 {formData.students.map((item, index) => (

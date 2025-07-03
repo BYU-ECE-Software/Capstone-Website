@@ -62,7 +62,7 @@ function CustomSelect({ options, onSelect, placeholder = 'Select an option' }) {
         onClick={() => setIsOpen(true)}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="custom-select-input"
+        className="custom-select-input w-full border border-gray-300 rounded p-2"
         />
         {isOpen && filteredOptions.length > 0 && (
         <ul className="custom-select-menu">

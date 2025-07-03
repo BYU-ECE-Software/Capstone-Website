@@ -14,3 +14,7 @@ exports.getAllUsers = async () => {
 exports.getAllStudents = async () => {
     return await userDAO.findAllStudents();
 }
+
+exports.getAllCoaches = async () => {
+    return await userDAO.findAllCoaches();
+}

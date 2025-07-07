@@ -22,6 +22,5 @@ exports.getTeamById = async (teamId) => {
 
 exports.getAllTeams = async () => {
     const teams = await teamDAO.findAll();
-    console.log(teams);
     return teams;
 };

@@ -2,6 +2,7 @@ USE capstone;
 
 CREATE TABLE IF NOT EXISTS teams (
     team_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    team_number nvarchar(255),
     school_year nvarchar(9) NOT NULL, -- 9 chars, eg. "2025-2026"
     coach_id INT NOT NULL,
     -- students will be connected to a team on their own table. See users.team_id

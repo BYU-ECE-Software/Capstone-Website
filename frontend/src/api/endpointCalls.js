@@ -27,3 +27,21 @@ exports.fetchAllCoaches = async () => {
     if (!response.ok) throw new Error('Failed to fetch coaches');
     return await response.json();
 }
+
+exports.createTeam = async (formData) => {
+    const team = {
+        team: formData.team,
+        coach: formData.coach,
+        students: formData.students,
+    };
+    console.log(team);
+    const response = await fetch(`/teams/`,
+        {
+          method:'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        },
+    );
+    if (!response.ok) throw new Error('Failed to create team');
+    return await response.json();
+}

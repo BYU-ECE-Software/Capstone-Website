@@ -5,7 +5,6 @@ exports.getTeamById = async (req, res) => {
         const teamId = req.params.teamId;
         const team = await teamService.getTeamById(teamId);
 
-        console.log(team);
         if (!team) { // I assume this is the same as a not null check in JS
             return res.status(404).json({ error: 'Team not found' });
         }
@@ -26,3 +25,14 @@ exports.getAllTeams = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+exports.updateTeam = async (req, res) => {
+    try {} catch (err) {}
+}
+
+exports.createTeam = async (req, res) => {
+    try {
+        const team = req.body;
+        console.log(team.coach);
+    } catch (err) {}
+}

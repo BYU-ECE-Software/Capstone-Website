@@ -5,8 +5,8 @@ require('./auth/samlStrategy'); // why isn't this assigned to a variable?
 
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use(session({
     secret: 'what-is-the-secret',

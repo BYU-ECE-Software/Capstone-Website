@@ -42,7 +42,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
     const studentOptions = useMemo(() => allStudents.filter(s => !formData.students.some(fs => fs.user_id === s.user_id))
         .map(student => ({
             value: student.user_id,
-            label: `${student.prefered_name ? student.prefered_name : student.first_name} ${student.last_name}`,
+            label: `${student.prefered_name ? student.prefered_name : student.first_name} ${student.last_name} (${student.net_id})`,
         })),
         [allStudents, formData.students]
     );
@@ -58,7 +58,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
     const coachOptions = useMemo(() => allCoaches.filter(s => !formData.coach.some(fs => fs.user_id === s.user_id))
         .map(indCoach => ({
             value: indCoach.user_id,
-            label: `${indCoach.prefered_name ? indCoach.prefered_name : indCoach.first_name} ${indCoach.last_name}`,
+            label: `${indCoach.prefered_name ? indCoach.prefered_name : indCoach.first_name} ${indCoach.last_name} (${indCoach.net_id})`,
         })),
         [allCoaches, formData.coaches]
     );
@@ -77,7 +77,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
     //When the user clicks the submit button, handle accordingly (be it create or update)
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit({formData}); //and all the other data things
+        onSubmit(formData); //and all the other data things
     };
 
     //When the user changes a field, change it here in the data
@@ -131,6 +131,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
 
     //If a coach is removed from a team, remove them from the team and add them to the dropdown
     const handleRemoveCoach = useCallback((userId) => {
+        // TODO add a confirmation popup
         const coach = formData.coach.find(s => s.user_id === userId);
         setAllCoaches(prev => {
             if (prev.some(s => s.user_id === userId)) return prev;
@@ -155,10 +156,11 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
                 <label className="block font-medium">Coach</label>
                 {console.log(formData)}
                 {formData.coach.map((item, index) => (
-                    <div>
-                        <input className="w-full border border-gray-300 rounded p-2" 
-                        name="students" type="text" value={item.first_name + " " + item.last_name} onChange={handleChange} />
-                        <button onClick={() => handleRemoveCoach(item.user_id)}>Remove</button>
+                    <div className='flex items-center mb-2'>
+                        <label className="flex-1 w-full border border-gray-300 rounded p-2" 
+                        name="students">{item.first_name} {item.last_name} ({item.net_id})</label>
+                        <button className="ml-2 shrink-0 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                        onClick={() => handleRemoveCoach(item.user_id)}>Remove</button>
                     </div>
                 ))
                 }
@@ -174,10 +176,11 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
             <div>
                 <label className="block font-medium">Students</label>
                 {formData.students.map((item, index) => (
-                    <div>
-                        <input className="w-full border border-gray-300 rounded p-2" 
-                        name="students" type="text" value={item.first_name + " " + item.last_name} onChange={handleChange} />
-                        <button onClick={() => handleRemoveStudent(item.user_id)}>Remove</button>
+                    <div className='flex items-center mb-2'>
+                        <label className="flex-1 w-full border border-gray-300 rounded p-2" 
+                        name="students">{item.first_name} {item.last_name} ({item.net_id})</label>
+                        <button className="ml-2 shrink-0 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                        onClick={() => handleRemoveStudent(item.user_id)}>Remove</button>
                     </div>
                 ))
                 }
@@ -227,14 +230,14 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="team_box_folder" type="text" value={formData.team.team_box_folder} onChange={handleChange} />
             <button type="submit"
-                className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a]">
+                className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a] mt-2">
                 Build Team Box Folder
             </button>
             <label className="block font-medium">Class Document Folder</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="class_document_folder" type="text" value={formData.team.class_document_folder} onChange={handleChange} />
             <button type="submit"
-                className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a]">
+                className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a] mt-2">
                 Build Class Document Folder
             </button>
             <div className='flex justify-center'>

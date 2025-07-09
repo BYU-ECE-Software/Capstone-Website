@@ -60,7 +60,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
             value: indCoach.user_id,
             label: `${indCoach.prefered_name ? indCoach.prefered_name : indCoach.first_name} ${indCoach.last_name} (${indCoach.net_id})`,
         })),
-        [allCoaches, formData.coaches]
+        [allCoaches, formData.coach]
     );
 
     //If we are editing (instead of creating) a team, initialize the data to what was already there

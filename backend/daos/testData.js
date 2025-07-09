@@ -75,7 +75,7 @@ const teams = [
     }
 ];
 
-const connection = require('../db/connection');
+const connection = await require('../db/connection');
 
 function insertLine(tableName, data) {
     // Extract columns and values from the object

@@ -33,6 +33,11 @@ exports.updateTeam = async (req, res) => {
 exports.createTeam = async (req, res) => {
     try {
         const team = req.body;
-        console.log(team.coach);
-    } catch (err) {}
+        console.log("team at controller = " + team);
+        await teamService.createTeam(team);
+        res.status(201);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server errror' });
+    }
 }

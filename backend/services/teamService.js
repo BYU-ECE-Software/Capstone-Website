@@ -24,3 +24,9 @@ exports.getAllTeams = async () => {
     const teams = await teamDAO.findAll();
     return teams;
 };
+
+exports.createTeam = async (team) => {
+    console.log("team at service = " + team);
+    const created = await teamDAO.insertTeam(team); // just to validate that it actually got created
+    return created;
+};

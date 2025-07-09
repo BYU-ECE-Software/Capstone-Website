@@ -1,7 +1,7 @@
-const connection = require('../db/connection');
+const pool = require('../db/connection');
 
 // given a user id, return a dictionary of their info
-exports.findById = (id, callback) => {
+exports.findById = async (id) => {
     const teamSql = `SELECT
         team_id,
         team_name,
@@ -10,62 +10,61 @@ exports.findById = (id, callback) => {
         WHERE teams.team_id = ?
         GROUP BY teams.team_id, teams.team_name;`;
 
-    return new Promise((resolve, reject) => {
-        connection.query(teamSql, [id], (err, results) => {
-            if (err) return reject(err);
-            //console.log(results);
-            resolve(results[0]);
-        });
-    });
-    // const coachSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
-    // const coachRole = 2;
-    // const studentSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
-    // const studentRole = 1;
+    const [rows] = await pool.query(teamSql, [id]);
 
+    return rows[0];
     // return new Promise((resolve, reject) => {
-    //     // run each individual query
-    //     const teamPromise = new Promise((resolve, reject) => {
-    //         connection.query(teamSql, [id], (err, results) => {
-    //             if (err) return reject(err);
-    //             resolve(results[0]);
-    //         });
+    //     connection.query(teamSql, [id], (err, results) => {
+    //         if (err) return reject(err);
+    //         //console.log(results);
+    //         resolve(results[0]);
     //     });
-
-    //     const coachPromise = new Promise((resolve, reject) => {
-    //         connection.query(coachSql, [id, coachRole], (err, results) => {
-    //             if (err) return reject(err);
-    //             resolve(results[0]);
-    //         });
-    //     });
-
-    //     const studentPromise = new Promise((resolve, reject) => {
-    //         connection.query(studentSql, [id, studentRole], (err, results) => {
-    //             if (err) return reject(err);
-    //             if (results.length > 0) {
-    //                 resolve(results);
-    //             } else {
-    //                 resolve(results[0]);
-    //             }
-    //         });
-    //     });
-
-    //     // Resolve everything together
-    //     Promise.all([teamPromise, coachPromise, studentPromise])
-    //         .then(([team, coach, students]) => {
-    //             resolve({team, coach, students})
-    //         })
-    //         .catch(reject);
     // });
 };
 
-/** So, thinking about this function, it might not be necessary to pull all the data, we might just need a list of all the PKs (filtered by school year)
- * Then we'll just iteratively call the other endpoint to get the individual data for each team.
- */
 exports.findAll = async (callback) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT team_id FROM teams', (err, results) => { // add a school year filter later
-            if (err) return reject(err);
-            resolve(results);
-        });
-    });
-}
+    const [rows] = await pool.query('SELECT team_id FROM teams');
+    return rows;
+};
+
+exports.insertTeam = async (team) => {
+    console.log("team at dao = " + team);
+
+    const createSql =
+        `INSERT INTO teams (team_number,
+            school_year, 
+            grading_coach_1_id,
+            grading_coach_2_id,
+            er_director_id,
+            long_distance_access_code,
+            caedm_group_folder,
+            project_id,
+            logo,
+            team_name,
+            email_list,
+            team_box_folder,
+            class_doc_folder) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    
+    const connection = await pool.getConnection();
+    const subTeam = team.team
+    try {
+        console.log(team.team);
+        await connection.beginTransaction();
+        const values = [subTeam.team_id, subTeam.school_year, subTeam.grading_coach_1_id, subTeam.grading_coach_2_id,
+            subTeam.ER_director === '' ? null : parseInt(subTeam.ER_director), subTeam.long_distance_access_code === '' ? null : parseInt(subTeam.long_distance_access_code), 
+            subTeam.caedm_group_folder === '' ? null : parseInt(subTeam.caedm_group_folder), subTeam.project === '' ? null : parseInt(subTeam.project),
+            subTeam.logo, subTeam.team_name, subTeam.email_list, subTeam.team_box_folder === '' ? null : parseInt(subTeam.team_box_folder), 
+            subTeam.class_document_folder === '' ? null : parseInt(subTeam.class_document_folder)
+        ];
+        const [res] = await connection.query(createSql, values); // need to convert this to an array from a dictionary
+
+
+        await connection.commit();
+        return {team_id: res.insertId, ...team}
+    } catch (err) {
+        await connection.rollback();
+        throw err;
+    } finally {
+        connection.release();
+    }
+};

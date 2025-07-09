@@ -34,7 +34,6 @@ exports.createTeam = async (formData) => {
         coach: formData.coach,
         students: formData.students,
     };
-    console.log(team);
     const response = await fetch(`/teams/`,
         {
           method:'POST',

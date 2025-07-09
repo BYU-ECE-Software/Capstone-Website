@@ -1,8 +1,7 @@
 // Set upt the database connection
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 const dbConfig = require('../db/config');
 
-const connection = mysql.createConnection(dbConfig);
+const pool = mysql.createPool(dbConfig)
 
-connection.connect();
-module.exports = connection;
+module.exports = pool;

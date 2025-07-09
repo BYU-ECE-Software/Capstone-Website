@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import UserTeamLine from '../components/users/UserTeamLine';
+import UserTeamDirectoryLine from './users/UserTeamDirectoryLine';
 import { fetchTeamById } from '../api/endpointCalls';
 
 import './TeamProfile.css';
@@ -38,7 +38,7 @@ export default function TeamProfile({ team_id=0 }) {
             }
             <div id="students">
                 {(team.students.length > 0 && team.students) ? (team.students.map((student) => (
-                    <UserTeamLine key={student.user_id} student={student} />
+                    <UserTeamDirectoryLine key={student.user_id} student={student} />
                 ))) : (<p>No students assigned team</p>)}
             </div>
         </div>

@@ -46,9 +46,8 @@ exports.insertTeam = async (team) => {
             class_doc_folder) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     
     const connection = await pool.getConnection();
-    const subTeam = team.team
     try {
-        console.log(team.team);
+        const subTeam = team.team;
         await connection.beginTransaction();
         const values = [subTeam.team_id, subTeam.school_year, subTeam.grading_coach_1_id, subTeam.grading_coach_2_id,
             subTeam.ER_director === '' ? null : parseInt(subTeam.ER_director), subTeam.long_distance_access_code === '' ? null : parseInt(subTeam.long_distance_access_code), 
@@ -58,6 +57,10 @@ exports.insertTeam = async (team) => {
         ];
         const [res] = await connection.query(createSql, values); // need to convert this to an array from a dictionary
 
+        const students = team.students;
+        for (var i = 0; i < students.length; i++) {
+            await connection.query('UPDATE users SET team_id = ? WHERE user_id = ?', [res.insertId, students[i].user_id]);
+        }
 
         await connection.commit();
         return {team_id: res.insertId, ...team}

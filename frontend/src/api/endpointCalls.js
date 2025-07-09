@@ -44,3 +44,21 @@ exports.createTeam = async (formData) => {
     if (!response.ok) throw new Error('Failed to create team');
     return await response.json();
 }
+
+exports.editTeam = async (teamId, formData) => {
+    // const team = {
+    //     formData.team,
+    //     coach: formData.coach,
+    //     students: formData.students,
+    // };
+    console.log(teamId);
+    const response = await fetch(`/teams/${teamId}`,
+        {
+          method:'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        },
+    );
+    if (!response.ok) throw new Error('Failed to update team');
+    return await response.json();
+}

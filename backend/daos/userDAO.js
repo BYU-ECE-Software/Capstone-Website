@@ -31,7 +31,7 @@ exports.coachByTeamId = async (id) => {
     const coachSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
     const coachRole = 2;
     const [rows] = await pool.query(coachSql, [id, coachRole]);
-    return rows[0] // will need to change to support multiple coaches
+    return rows[0]; // will need to change to support multiple coaches
 }
 
 // return all the users in the database

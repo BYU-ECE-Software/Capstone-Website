@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import TeamForm from '../components/TeamForm';
 import { useEffect, useState } from 'react';
-import { fetchTeamById } from '../api/endpointCalls';
+import { editTeam, fetchTeamById } from '../api/endpointCalls';
 
 export default function EditTeam() {
     const { id } = useParams();
@@ -17,6 +17,7 @@ export default function EditTeam() {
     //const initialData = team; // data from database
     const updateTeam = (data) => {
         //call endpoint to put team
+        editTeam(data.team.team_id, data);
     }
 
     if (!team) return <p>Loading...</p>;

@@ -9,6 +9,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
         team:
         {
             team_id: '',
+            team_number: '',
             school_year: '',
             grading_coach_one: '',
             grading_coach_two: '',
@@ -25,6 +26,9 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
             class_document_folder: ''
         }
     });
+    // the following will be used eventually in file uploads
+    const [logo, setLogo] = useState(null);
+    const handleLogoChange = (e) => setLogo(e.target.files?.[0] ?? null);
     
     const [allStudents, setAllStudents] = useState([]);
     const [allCoaches, setAllCoaches] = useState([]);
@@ -39,7 +43,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
         .catch((err) => console.error(err));
     }, []);
     //Set the options for the student dropdown to any unassigned student who hasn't been added yet to this team
-    const studentOptions = useMemo(() => allStudents.filter(s => !formData.students.some(fs => fs.user_id === s.user_id))
+    const studentOptions = useMemo(() => allStudents.filter(s => s.team_id == null && !formData.students.some(fs => fs.user_id === s.user_id))
         .map(student => ({
             value: student.user_id,
             label: `${student.prefered_name ? student.prefered_name : student.first_name} ${student.last_name} (${student.net_id})`,
@@ -55,29 +59,70 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
         .catch((err) => console.error(err));
     }, []);
     //Set the options for the student dropdown to any unassigned student who hasn't been added yet to this team
-    const coachOptions = useMemo(() => allCoaches.filter(s => !formData.coach.some(fs => fs.user_id === s.user_id))
-        .map(indCoach => ({
-            value: indCoach.user_id,
-            label: `${indCoach.prefered_name ? indCoach.prefered_name : indCoach.first_name} ${indCoach.last_name} (${indCoach.net_id})`,
-        })),
-        [allCoaches, formData.coach]
-    );
+    // const coachOptions = useMemo(() => allCoaches.filter(s => !formData.coach.some(fs => fs.user_id === s.user_id))
+    //     .map(indCoach => ({
+    //         value: indCoach.user_id,
+    //         label: `${indCoach.prefered_name ? indCoach.prefered_name : indCoach.first_name} ${indCoach.last_name} (${indCoach.net_id})`,
+    //     })),
+    //     [allCoaches, formData.coach]
+    // );
+    const coachOptions = useMemo(() => {
+        // Guard clause: if coach contains only one undefined element, return all options
+        if (
+            !Array.isArray(formData.coach) ||
+            (formData.coach.length === 1 && formData.coach[0] === undefined)
+        ) {
+            return allCoaches.map(indCoach => ({
+                value: indCoach.user_id,
+                label: `${indCoach.prefered_name ? indCoach.prefered_name : indCoach.first_name} ${indCoach.last_name} (${indCoach.net_id})`,
+            }));
+        }
+
+        // Normal filtering logic
+        return allCoaches
+            .filter(s => !formData.coach.some(fs => fs.user_id === s.user_id))
+            .map(indCoach => ({
+                value: indCoach.user_id,
+                label: `${indCoach.prefered_name ? indCoach.prefered_name : indCoach.first_name} ${indCoach.last_name} (${indCoach.net_id})`,
+            }));
+    }, [allCoaches, formData.coach]);
 
     //If we are editing (instead of creating) a team, initialize the data to what was already there
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
-            setFormData((prev) => ({
-                ...prev,
-                ...initialData,
-                coach: [initialData.coach],
-            }));
+            setFormData(prev => {
+            const updated = {
+                coach: initialData.coach ? [initialData.coach] : [],
+                students: initialData.students || [],
+                team: {
+                ...prev.team,
+                },
+            };
+
+            // Copy only keys that belong in `team`
+            for (const key in initialData) {
+                if (key in updated.team) {
+                updated.team[key] = initialData[key];
+                }
+            }
+            console.log(updated);
+            return updated;
+            });
         }
     }, [initialData]);
+
 
     //When the user clicks the submit button, handle accordingly (be it create or update)
     const handleSubmit = (e) => {
         e.preventDefault();
-        onSubmit(formData); //and all the other data things
+
+        //The following code is for eventual image/file upload handling
+        // const fd = new FormData();
+        // Object.entries(formData).forEach(([k, v]) => fd.append(k, v));
+        // console.log(fd.entries().team);
+        // if (logo) fd.append('logo', logo);
+        // console.log(fd);
+        onSubmit(formData);
     };
 
     //When the user changes a field, change it here in the data
@@ -148,21 +193,22 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
         <form onSubmit={handleSubmit}>
             <label className="block font-medium">Team Number</label> {/* Hmmmmm. I've had this just an autogenerated key. Talk to office */}
             <input className="w-full border border-gray-300 rounded p-2" 
-                name="team_id" type="text" value={formData.team.team_id} onChange={handleChange} />
+                name="team_number" type="text" value={formData.team.team_number} onChange={handleChange} />
             <label className="block font-medium">School Year</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="school_year" type="text" value={formData.team.school_year} onChange={handleChange} />
             <div>
                 <label className="block font-medium">Coach</label>
-                {console.log(formData)}
-                {formData.coach.map((item, index) => (
+                {(formData.coach.length > 0 && formData.coach[0] != undefined) &&
+                    formData.coach.map((item, index) => (
                     <div className='flex items-center mb-2'>
                         <label className="flex-1 w-full border border-gray-300 rounded p-2" 
                         name="students">{item.first_name} {item.last_name} ({item.net_id})</label>
                         <button className="ml-2 shrink-0 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                         onClick={() => handleRemoveCoach(item.user_id)}>Remove</button>
                     </div>
-                ))
+                    ))
+                
                 }
                 <label htmlFor='add-student'>Add Coach</label>
                 <CustomSelect
@@ -216,7 +262,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
                 name="external_review_coach" type="text" value={formData.team.external_review_coach} onChange={handleChange} />
             <label className="block font-medium">Logo</label>
             <input className="w-full border border-gray-300 rounded p-2" 
-                name="logo" type="file" onChange={handleChange} /> {/*value={formData.team.logo}*/}
+                name="logo" type="file" onChange={handleLogoChange} accept='.png,.jpg,.jpeg'/> {/*value={formData.team.logo}*/}
             <label className="block font-medium">PDF Logo</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="pdf_logo" type="file" onChange={handleChange} /> {/*value={formData.team.pdf_logo}*/}

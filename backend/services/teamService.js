@@ -8,6 +8,9 @@ exports.getTeamById = async (teamId) => {
     const students = await userDAO.findByTeamId(teamId);
     const coach = await userDAO.coachByTeamId(teamId);
 
+    if (!team) {
+        throw new Error(`Team with ID ${teamId} not found`);
+    }
     team.students = students;
     team.coach = coach;
 
@@ -26,7 +29,11 @@ exports.getAllTeams = async () => {
 };
 
 exports.createTeam = async (team) => {
-    console.log("team at service = " + team);
     const created = await teamDAO.insertTeam(team); // just to validate that it actually got created
     return created;
 };
+
+exports.updateTeam = async (teamId, team) => {
+    const updated = await teamDAO.updateTeam(teamId, team);
+    return updated;
+}

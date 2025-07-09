@@ -27,15 +27,26 @@ exports.getAllTeams = async (req, res) => {
 };
 
 exports.updateTeam = async (req, res) => {
-    try {} catch (err) {}
+    try {
+        const teamId = req.params.teamId;
+        console.log(teamId);
+        const team = req.body;
+        const updated = await teamService.updateTeam(teamId, team);
+        res.status(200); // possibly 204
+        res.send(updated);
+        console.log(updated);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server errror' });
+    }
 }
 
 exports.createTeam = async (req, res) => {
     try {
         const team = req.body;
-        console.log("team at controller = " + team);
-        await teamService.createTeam(team);
+        const created = await teamService.createTeam(team);
         res.status(201);
+        res.send(created);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server errror' });

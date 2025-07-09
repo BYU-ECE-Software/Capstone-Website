@@ -1,6 +1,6 @@
 const connection = require('../db/connection');
 
-exports.findById = (id, callback) => {
+exports.findAllocationById = async (id) => {
     const budgetAllocationSql = `SELECT
         author_id,
         budget_allocation_id,
@@ -12,9 +12,12 @@ exports.findById = (id, callback) => {
         FROM teambudgets
         WHERE budget_allocations.budget_allocation_id = ?
         GROUP BY budget_allocations.budget_allocation_id, budget_allocations.team_id;`;
-    const authorSql = "SELECT * FROM users WHERE user_id = ?";
+    
+    const [budgetAllocationRows] = await pool.query(budgetAllocationSql, [id]);
 
-    return new Promise((resolve, reject) => {
+    return budgetAllocationRows[0];
+
+    /*return new Promise((resolve, reject) => {
         // run each individual query
         const budgetAllocationPromise = new Promise((resolve, reject) => {
             connection.query(budgetAllocationSql, [id], (err, results) => {
@@ -36,7 +39,14 @@ exports.findById = (id, callback) => {
                 resolve({budgetAllocation, author})
             })
             .catch(reject);
-    });
+    });*/
+};
+
+exports.findAuthorById = async (id) => {
+    const authorSql = `SELECT * FROM users WHERE user_id = ?`;
+
+    const [authorRows] = await pool.query(authorSql, [id]);
+    return authorRows;
 };
 
 /**

@@ -1,14 +1,34 @@
 const connection = require("../db/connection");
 
 exports.getAllOrders = async () => {
-  const sql = `
-    SELECT * FROM orders
-  `;
+  const sql = `SELECT * FROM orders ORDER BY post_date DESC`;
 
   return new Promise((resolve, reject) => {
-    connection.query(sql, (err, results) => {
+    connection.query(sql, async (err, orders) => {
       if (err) return reject(err);
-      resolve(results);
+
+      try {
+        // Fetch line items for each order
+        const orderIds = orders.map((order) => order.order_id);
+        const placeholders = orderIds.map(() => "?").join(",");
+        const lineItemSql = `SELECT * FROM order_line_items WHERE order_id IN (${placeholders})`;
+
+        connection.query(lineItemSql, orderIds, (itemErr, items) => {
+          if (itemErr) return reject(itemErr);
+
+          // Attach items to the matching order
+          const ordersWithItems = orders.map((order) => {
+            const orderItems = items.filter(
+              (item) => item.order_id === order.order_id
+            );
+            return { ...order, items: orderItems };
+          });
+
+          resolve(ordersWithItems);
+        });
+      } catch (nestedErr) {
+        reject(nestedErr);
+      }
     });
   });
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { submitPurchaseRequest } from "../api/endpointCalls";
+import { submitPurchaseRequest } from "../../api/endpointCalls";
 
 export default function PurchaseForm() {
   const [items, setItems] = useState([
@@ -74,7 +74,7 @@ export default function PurchaseForm() {
         <div>
           <label className="block font-medium">Vendor *</label>
           <input
-            type="text"
+            type="number"
             value={vendor}
             onChange={(e) => setVendor(e.target.value)}
             required

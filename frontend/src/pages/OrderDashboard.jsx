@@ -1,5 +1,5 @@
 import PageTitle from "../components/pageTitle";
-import Dashboard from "../components/Dashboard";
+import Dashboard from "../components/orders/Dashboard";
 
 export default function OrderDashboard() {
   return (

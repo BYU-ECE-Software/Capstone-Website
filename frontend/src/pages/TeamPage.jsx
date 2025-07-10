@@ -18,7 +18,6 @@ export default function TeamPage() {
         .catch((err) => console.error(err));
     });
 
-    console.log(team.coach.first_name);
     if (!team) return <p>Loading...</p>;
     if (team.error) return <p>Team not found</p>
 

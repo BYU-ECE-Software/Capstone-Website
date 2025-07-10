@@ -18,6 +18,7 @@ export default function TeamPage() {
         .catch((err) => console.error(err));
     });
 
+    console.log(team.coach.first_name);
     if (!team) return <p>Loading...</p>;
     if (team.error) return <p>Team not found</p>
 
@@ -27,9 +28,13 @@ export default function TeamPage() {
             <h3><b>Team Name: </b>{team.team_name}</h3>
             <p><b>School Year</b></p>
             <p>{team.school_year}</p>
-            <p><b>Coach: </b>{team.coach.first_name} {team.coach.last_name}</p>{/* when needed we can change this to loop through the coaches */}
-            <p><b>Email: </b>{team.coach.email}</p>
-            <p><b>Cell Phone:</b>{team.coach.phone}</p>
+            {(team.coach) && 
+                <div>
+                    <p><b>Coach: </b>{team.coach.first_name} {team.coach.last_name}</p>{/* when needed we can change this to loop through the coaches */}
+                    <p><b>Email: </b>{team.coach.email}</p>
+                    <p><b>Cell Phone:</b>{team.coach.phone}</p>
+                </div>
+            }
             {/* makes sure endpoint returns the grading coaches as user objects, not just the ids */}
             <p><b>Grading Coach 1: </b>{/*team.grading_coach_one.first_name} {team.grading_coach_one.last_name*/}</p>
             <p><b>Grading Coach 2: </b>{/*team.grading_coach_two.first_name} {team.grading_coach_two.last_name*/}</p>

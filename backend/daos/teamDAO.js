@@ -1,7 +1,7 @@
-const connection = require('../db/connection');
+const pool = require('../db/connection');
 
 // given a user id, return a dictionary of their info
-exports.findById = (id, callback) => {
+exports.findById = async (id) => {
     const teamSql = `SELECT
         team_id,
         team_name,
@@ -10,62 +10,119 @@ exports.findById = (id, callback) => {
         WHERE teams.team_id = ?
         GROUP BY teams.team_id, teams.team_name;`;
 
-    return new Promise((resolve, reject) => {
-        connection.query(teamSql, [id], (err, results) => {
-            if (err) return reject(err);
-            //console.log(results);
-            resolve(results[0]);
-        });
-    });
-    // const coachSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
-    // const coachRole = 2;
-    // const studentSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
-    // const studentRole = 1;
+    const [rows] = await pool.query(teamSql, [id]);
 
-    // return new Promise((resolve, reject) => {
-    //     // run each individual query
-    //     const teamPromise = new Promise((resolve, reject) => {
-    //         connection.query(teamSql, [id], (err, results) => {
-    //             if (err) return reject(err);
-    //             resolve(results[0]);
-    //         });
-    //     });
-
-    //     const coachPromise = new Promise((resolve, reject) => {
-    //         connection.query(coachSql, [id, coachRole], (err, results) => {
-    //             if (err) return reject(err);
-    //             resolve(results[0]);
-    //         });
-    //     });
-
-    //     const studentPromise = new Promise((resolve, reject) => {
-    //         connection.query(studentSql, [id, studentRole], (err, results) => {
-    //             if (err) return reject(err);
-    //             if (results.length > 0) {
-    //                 resolve(results);
-    //             } else {
-    //                 resolve(results[0]);
-    //             }
-    //         });
-    //     });
-
-    //     // Resolve everything together
-    //     Promise.all([teamPromise, coachPromise, studentPromise])
-    //         .then(([team, coach, students]) => {
-    //             resolve({team, coach, students})
-    //         })
-    //         .catch(reject);
-    // });
+    return rows[0];
 };
 
-/** So, thinking about this function, it might not be necessary to pull all the data, we might just need a list of all the PKs (filtered by school year)
- * Then we'll just iteratively call the other endpoint to get the individual data for each team.
- */
-exports.findAll = async (callback) => {
-    return new Promise((resolve, reject) => {
-        connection.query('SELECT team_id FROM teams', (err, results) => { // add a school year filter later
-            if (err) return reject(err);
-            resolve(results);
-        });
-    });
-}
+exports.findAll = async () => {
+    const [rows] = await pool.query('SELECT team_id FROM teams');
+    return rows;
+};
+
+exports.insertTeam = async (team) => {
+    const createSql =
+        `INSERT INTO teams (team_number,
+            school_year, 
+            grading_coach_1_id,
+            grading_coach_2_id,
+            er_director_id,
+            long_distance_access_code,
+            caedm_group_folder,
+            project_id,
+            logo,
+            team_name,
+            email_list,
+            team_box_folder,
+            class_doc_folder) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    
+    const connection = await pool.getConnection();
+    try {
+        const subTeam = team.team;
+        await connection.beginTransaction();
+        var res = null;
+        if (subTeam) {
+            const values = [subTeam.team_id, subTeam.school_year, subTeam.grading_coach_1_id, subTeam.grading_coach_2_id,
+                subTeam.ER_director === '' ? null : parseInt(subTeam.ER_director), subTeam.long_distance_access_code === '' ? null : parseInt(subTeam.long_distance_access_code), 
+                subTeam.caedm_group_folder === '' ? null : parseInt(subTeam.caedm_group_folder), subTeam.project === '' ? null : parseInt(subTeam.project),
+                subTeam.logo, subTeam.team_name, subTeam.email_list, subTeam.team_box_folder === '' ? null : parseInt(subTeam.team_box_folder), 
+                subTeam.class_document_folder === '' ? null : parseInt(subTeam.class_document_folder)
+            ];
+            [res] = await connection.query(createSql, values); // need to convert this to an array from a dictionary
+        }
+
+        const students = team.students;
+        if (students) {
+            for (var i = 0; i < students.length; i++) {
+                await connection.query('UPDATE users SET team_id = ? WHERE user_id = ?', [res.insertId, students[i].user_id]);
+            }
+        }
+        await connection.commit();
+        return {team: {...team.team, team_id: res ? res.insertId : null}, students: students, coach: [team.coach]};
+    } catch (err) {
+        await connection.rollback();
+        throw err;
+    } finally {
+        connection.release();
+    }
+};
+
+exports.updateTeam = async (teamId, team) => {
+    const updateSql =
+        `UPDATE teams SET
+            team_number = ?,
+            school_year = ?, 
+            grading_coach_1_id = ?,
+            grading_coach_2_id = ?,
+            er_director_id = ?,
+            long_distance_access_code = ?,
+            caedm_group_folder = ?,
+            project_id = ?,
+            logo = ?,
+            team_name = ?,
+            email_list = ?,
+            team_box_folder = ?,
+            class_doc_folder = ?
+        WHERE team_id = ?`;
+    
+    const connection = await pool.getConnection();
+    try {
+        const studentRole = 1;
+        const oldStudentsResult = await pool.query('SELECT user_id FROM users WHERE team_id = ? AND role_id = ?', [teamId, studentRole]);
+        const oldStudents = oldStudentsResult[0];
+        const subTeam = team.team;
+        await connection.beginTransaction();
+        var res = null;
+        if (subTeam) {
+            const values = [subTeam.team_number, subTeam.school_year, subTeam.grading_coach_1_id, subTeam.grading_coach_2_id,
+                subTeam.ER_director === '' ? null : parseInt(subTeam.ER_director), subTeam.long_distance_access_code === '' ? null : parseInt(subTeam.long_distance_access_code), 
+                subTeam.caedm_group_folder === '' ? null : parseInt(subTeam.caedm_group_folder), subTeam.project === '' ? null : parseInt(subTeam.project),
+                subTeam.logo, subTeam.team_name, subTeam.email_list, subTeam.team_box_folder === '' ? null : parseInt(subTeam.team_box_folder), 
+                subTeam.class_document_folder === '' ? null : parseInt(subTeam.class_document_folder),
+                teamId
+            ];
+            [res] = await connection.query(updateSql, values);
+        }
+
+        const students = team.students;
+        if (students) {
+            // remove the students that were removed by the user
+            const removedStudentIds = oldStudents.filter(oldId => !students.some(student => student.user_id === oldId)).map(s => s.user_id);
+            for (var i = 0; i < removedStudentIds.length; i++) {
+                await connection.query('UPDATE users SET team_id = NULL WHERE user_id = ?', [removedStudentIds[i]]);
+            }
+            const addedStudentIds = students.map(s => s.user_id).filter(newId => !oldStudents.includes(newId));
+            for (var i = 0; i < addedStudentIds.length; i++) {
+                await connection.query('UPDATE users SET team_id = ? WHERE user_id = ?', [teamId, addedStudentIds[i]]);
+            }
+        }
+        await connection.commit();
+
+        return {...team}
+    } catch (err) {
+        await connection.rollback();
+        throw err;
+    } finally {
+        connection.release();
+    }
+};

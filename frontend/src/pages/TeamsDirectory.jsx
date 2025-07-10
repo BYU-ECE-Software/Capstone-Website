@@ -9,7 +9,6 @@ export default function TeamDirectory() {
     useEffect(() => {
         fetchTeamIds()
         .then((data) => {
-            console.log(data);
             setTeams(data);
         })
         .catch((err) => console.error('Error fetching teams:', err));

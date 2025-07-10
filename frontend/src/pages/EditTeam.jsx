@@ -19,7 +19,7 @@ export default function EditTeam() {
         //call endpoint to put team
         const updated = await editTeam(data.team.team_id, data);
         return updated;
-    }
+    };
 
     if (!team) return <p>Loading...</p>;
     return (
@@ -27,7 +27,7 @@ export default function EditTeam() {
             <h2 className="text-2xl text-byuNavy font-semibold mb-4">
                 Edit Team {id}
             </h2>
-            <TeamForm initialData={team} onSubmit={updateTeam} submitLabel={"Save"}/>
+            <TeamForm initialData={team} onSubmit={updateTeam} submitLabel={"Save"} cancelRedirect={`/teams/${team.team_id}`}/>
         </div>
     );
 }

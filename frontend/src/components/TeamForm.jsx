@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { fetchAllStudents, fetchAllCoaches } from '../api/endpointCalls';
 import CustomSelect from './custom_select/customSelect';
 
-export default function TeamForm({ initialData = {}, onSubmit, submitLabel}) {
+export default function TeamForm({ initialData = {}, onSubmit, cancelRedirect, submitLabel}) {
     const [formData, setFormData] = useState({
         coach: [],
         students: [],
@@ -131,6 +131,14 @@ export default function TeamForm({ initialData = {}, onSubmit, submitLabel}) {
             console.error(err);
         }
     };
+    const onCancel = async (e) => {
+        e.preventDefault();
+        try {
+            navigate(cancelRedirect);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     //When the user changes a field, change it here in the data
     const handleChange = (e) => {
@@ -211,8 +219,15 @@ export default function TeamForm({ initialData = {}, onSubmit, submitLabel}) {
                     <div className='flex items-center mb-2'>
                         <label className="flex-1 w-full border border-gray-300 rounded p-2" 
                         name="students">{item.first_name} {item.last_name} ({item.net_id})</label>
-                        <button className="ml-2 shrink-0 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-                        onClick={() => handleRemoveCoach(item.user_id)}>Remove</button>
+                        <button type="button"
+                            className="ml-2 shrink-0 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                            onClick={() => {
+                                if (window.confirm("Are you sure you want to remove this coach?")) {
+                                    handleRemoveCoach(item.user_id)
+                                }
+                            }} tabIndex={-1}>
+                                Remove
+                        </button>
                     </div>
                     ))
                 
@@ -232,8 +247,15 @@ export default function TeamForm({ initialData = {}, onSubmit, submitLabel}) {
                     <div className='flex items-center mb-2'>
                         <label className="flex-1 w-full border border-gray-300 rounded p-2" 
                         name="students">{item.first_name} {item.last_name} ({item.net_id})</label>
-                        <button className="ml-2 shrink-0 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
-                        onClick={() => handleRemoveStudent(item.user_id)}>Remove</button>
+                        <button type="button" 
+                            className="ml-2 shrink-0 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                            onClick={() => {
+                                if (window.confirm("Are you sure you want to remove this student?")) {
+                                    handleRemoveStudent(item.user_id)        
+                                }
+                            }} tabIndex={-1}>
+                                Remove
+                        </button>
                     </div>
                 ))
                 }
@@ -282,14 +304,14 @@ export default function TeamForm({ initialData = {}, onSubmit, submitLabel}) {
             <label className="block font-medium">Team Box Folder</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="team_box_folder" type="text" value={formData.team.team_box_folder} onChange={handleChange} />
-            <button type="submit"
+            <button type="button"
                 className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a] mt-2">
                 Build Team Box Folder
             </button>
             <label className="block font-medium">Class Document Folder</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="class_document_folder" type="text" value={formData.team.class_document_folder} onChange={handleChange} />
-            <button type="submit"
+            <button type="button"
                 className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a] mt-2">
                 Build Class Document Folder
             </button>
@@ -298,6 +320,11 @@ export default function TeamForm({ initialData = {}, onSubmit, submitLabel}) {
                     className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a]">
                     {submitLabel}
                 </button>
+                <button type="button" onClick={onCancel}
+                    className="px-6 py-2 bg-byuMediumGray text-white font-semibold rounded hover:bg-[#202224] ml-4">
+                    Cancel
+                </button>
+                {/* future feature TODO delete button for Edit */}
             </div>
         </form>
     );

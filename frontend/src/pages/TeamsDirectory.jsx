@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import TeamProfile from './TeamProfile';
+import TeamProfile from '../components/TeamProfile';
 import PageTitle from '../components/pageTitle';
 import { fetchTeamIds } from '../api/endpointCalls';
 

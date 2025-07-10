@@ -6,6 +6,8 @@ import TeamPage from './pages/TeamPage';
 import Header from './components/header';
 import Footer from './components/footer';
 import CreateTeam from './pages/CreateTeam';
+import PurchaseRequest from "./pages/PurchaseRequest";
+import OrderDashboard from "./pages/OrderDashboard";
 
 import './App.css';
 

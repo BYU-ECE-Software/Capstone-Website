@@ -17,6 +17,8 @@ REM Run each SQL script — paths are relative to where this batch file runs (ro
 mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\users.sql
 mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\roles.sql
 mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\teams.sql
+mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\orders.sql
+mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\order_line_items.sql
 
 echo Done executing all SQL files.
 pause

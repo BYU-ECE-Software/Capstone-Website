@@ -105,7 +105,7 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
                 updated.team[key] = initialData[key];
                 }
             }
-            console.log(updated);
+
             return updated;
             });
         }

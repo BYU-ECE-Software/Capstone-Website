@@ -14,7 +14,6 @@ exports.getTeamById = async (teamId) => {
     team.students = students;
     team.coach = coach;
 
-    //console.log(team);
     if (!team.students) { // if there are no students then it will be undefined and that will cause problems on the frontend, we'd rather an empty list
         team.students = [];
     }

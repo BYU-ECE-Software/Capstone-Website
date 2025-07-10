@@ -29,12 +29,11 @@ exports.getAllTeams = async (req, res) => {
 exports.updateTeam = async (req, res) => {
     try {
         const teamId = req.params.teamId;
-        console.log(teamId);
         const team = req.body;
         const updated = await teamService.updateTeam(teamId, team);
         res.status(200); // possibly 204
         res.send(updated);
-        console.log(updated);
+        // console.log(updated);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server errror' });

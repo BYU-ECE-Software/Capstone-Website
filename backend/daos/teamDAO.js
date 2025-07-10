@@ -89,7 +89,8 @@ exports.updateTeam = async (teamId, team) => {
     const connection = await pool.getConnection();
     try {
         const studentRole = 1;
-        const oldStudents = await pool.query('SELECT user_id FROM users WHERE team_id = ? AND role_id = ?', [teamId, studentRole]);
+        const oldStudentsResult = await pool.query('SELECT user_id FROM users WHERE team_id = ? AND role_id = ?', [teamId, studentRole]);
+        const oldStudents = oldStudentsResult[0];
         const subTeam = team.team;
         await connection.beginTransaction();
         var res = null;
@@ -107,13 +108,13 @@ exports.updateTeam = async (teamId, team) => {
         const students = team.students;
         if (students) {
             // remove the students that were removed by the user
-            const removedStudentIds = oldStudents.filter(oldId => !students.some(student => student.user_id === oldId));
+            const removedStudentIds = oldStudents.filter(oldId => !students.some(student => student.user_id === oldId)).map(s => s.user_id);
             for (var i = 0; i < removedStudentIds.length; i++) {
-                await connection.query('UPDATE users SET team_id = NULL WHERE user_id = ?', [removedStudentIds[i].user_id]);
+                await connection.query('UPDATE users SET team_id = NULL WHERE user_id = ?', [removedStudentIds[i]]);
             }
             const addedStudentIds = students.map(s => s.user_id).filter(newId => !oldStudents.includes(newId));
             for (var i = 0; i < addedStudentIds.length; i++) {
-                await connection.query('UPDATE users SET team_id = ? WHERE user_id = ?', [teamId, addedStudentIds[i].user_id]);
+                await connection.query('UPDATE users SET team_id = ? WHERE user_id = ?', [teamId, addedStudentIds[i]]);
             }
         }
         await connection.commit();

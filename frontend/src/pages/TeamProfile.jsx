@@ -19,7 +19,6 @@ export default function TeamProfile({ team_id=0 }) {
         .catch((err) => console.error(err));
     }, [final_id]);
 
-    console.log(team);
     if (!team) return <p>Loading...</p>;
     if (team.error) return <p>Team not found</p>
 

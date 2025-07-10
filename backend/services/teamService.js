@@ -8,10 +8,12 @@ exports.getTeamById = async (teamId) => {
     const students = await userDAO.findByTeamId(teamId);
     const coach = await userDAO.coachByTeamId(teamId);
 
+    if (!team) {
+        throw new Error(`Team with ID ${teamId} not found`);
+    }
     team.students = students;
     team.coach = coach;
 
-    //console.log(team);
     if (!team.students) { // if there are no students then it will be undefined and that will cause problems on the frontend, we'd rather an empty list
         team.students = [];
     }
@@ -22,6 +24,15 @@ exports.getTeamById = async (teamId) => {
 
 exports.getAllTeams = async () => {
     const teams = await teamDAO.findAll();
-    console.log(teams);
     return teams;
 };
+
+exports.createTeam = async (team) => {
+    const created = await teamDAO.insertTeam(team); // just to validate that it actually got created
+    return created;
+};
+
+exports.updateTeam = async (teamId, team) => {
+    const updated = await teamDAO.updateTeam(teamId, team);
+    return updated;
+}

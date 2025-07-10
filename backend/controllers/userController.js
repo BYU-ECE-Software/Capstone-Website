@@ -18,8 +18,16 @@ exports.getUserById = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
     try {
-        const users = await userService.getAllUsers();
-        res.json(users);
+        if (req.query.role === '1') {
+            const students = await userService.getAllStudents();
+            res.json(students);
+        } else if (req.query.role === '2') {
+            const coaches = await userService.getAllCoaches();
+            res.json(coaches);
+        } else {
+            const users = await userService.getAllUsers();
+            res.json(users);
+        }
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });

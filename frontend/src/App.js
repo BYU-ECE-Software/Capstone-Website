@@ -11,9 +11,10 @@ import OrderDashboard from "./pages/OrderDashboard";
 
 import "./App.css";
 
-// import our BYU styling
-import "./styles/variables.css";
-import "./styles/global.css";
+
+import './styles/variables.css';
+import './styles/global.css';
+import EditTeam from './pages/EditTeam';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
           <Route index element={<TeamsDirectory />} />
           <Route path=":id" element={<TeamProfile />} />
           <Route path="create" element={<CreateTeam />} />
-          <Route path="edit/:id" element={<CreateTeam />} />
+          <Route path="edit/:id" element={<EditTeam />} />
         </Route>
         <Route path="/purchaseRequest" element={<PurchaseRequest />} />
         <Route path="/orders" element={<OrderDashboard />} />

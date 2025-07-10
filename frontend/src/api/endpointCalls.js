@@ -46,12 +46,6 @@ exports.createTeam = async (formData) => {
 }
 
 exports.editTeam = async (teamId, formData) => {
-    // const team = {
-    //     formData.team,
-    //     coach: formData.coach,
-    //     students: formData.students,
-    // };
-    console.log(teamId);
     const response = await fetch(`/teams/${teamId}`,
         {
           method:'PUT',

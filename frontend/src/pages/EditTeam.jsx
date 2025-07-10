@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import TeamForm from '../components/TeamForm';
 import { useEffect, useState } from 'react';
 import { editTeam, fetchTeamById } from '../api/endpointCalls';
@@ -14,10 +14,11 @@ export default function EditTeam() {
         })
         .catch((err) => console.error(err));
     }, [id]);
-    //const initialData = team; // data from database
-    const updateTeam = (data) => {
+    
+    const updateTeam = async (data) => {
         //call endpoint to put team
-        editTeam(data.team.team_id, data);
+        const updated = await editTeam(data.team.team_id, data);
+        return updated;
     }
 
     if (!team) return <p>Loading...</p>;
@@ -26,7 +27,7 @@ export default function EditTeam() {
             <h2 className="text-2xl text-byuNavy font-semibold mb-4">
                 Edit Team {id}
             </h2>
-            <TeamForm initialData={team} onSubmit={updateTeam} />
+            <TeamForm initialData={team} onSubmit={updateTeam} submitLabel={"Save"}/>
         </div>
     );
 }

@@ -58,8 +58,7 @@ exports.insertTeam = async (team) => {
             }
         }
         await connection.commit();
-
-        return {team_id: res ? res.insertId : null, ...team}
+        return {team: {...team.team, team_id: res ? res.insertId : null}, students: students, coach: [team.coach]};
     } catch (err) {
         await connection.rollback();
         throw err;

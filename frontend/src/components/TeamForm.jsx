@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchAllStudents, fetchAllCoaches } from '../api/endpointCalls';
 import CustomSelect from './custom_select/customSelect';
 
-export default function TeamForm({ initialData = {}, onSubmit}) {
+export default function TeamForm({ initialData = {}, onSubmit, submitLabel}) {
     const [formData, setFormData] = useState({
         coach: [],
         students: [],
@@ -113,7 +114,8 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
 
 
     //When the user clicks the submit button, handle accordingly (be it create or update)
-    const handleSubmit = (e) => {
+    const navigate = useNavigate();
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         //The following code is for eventual image/file upload handling
@@ -122,7 +124,12 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
         // console.log(fd.entries().team);
         // if (logo) fd.append('logo', logo);
         // console.log(fd);
-        onSubmit(formData);
+        try {
+            const navTeam = await onSubmit(formData);
+            navigate(`/teams/${navTeam.team.team_id}`);
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     //When the user changes a field, change it here in the data
@@ -289,8 +296,8 @@ export default function TeamForm({ initialData = {}, onSubmit}) {
             <div className='flex justify-center'>
                 <button type="submit"
                     className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a]">
-                    Submit
-                </button> {/* we could have this be different for create and update (submit/save) would need to add param to func */}
+                    {submitLabel}
+                </button>
             </div>
         </form>
     );

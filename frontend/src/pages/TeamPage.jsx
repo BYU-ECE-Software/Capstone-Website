@@ -22,24 +22,34 @@ export default function TeamPage() {
     if (team.error) return <p>Team not found</p>
 
     return (
-        <div>
-            <h2>{team.team_id}</h2>
-            <h3><b>Team Name: </b>{team.team_name}</h3>
-            <p><b>School Year</b></p>
-            <p>{team.school_year}</p>
-            {(team.coach) && 
+        <>
+            <div className="max-w-7xl mx-auto mt-4 mb-8 p-6 bg-white shadow-md rounded-md">
+                <h1 className="text-[30px]">{team.team_id}</h1>
+                <h3><b>Team Name: </b>{team.team_name}</h3>
+                <p><b>School Year:</b></p>
+                <p>{team.school_year}</p>
+                <br/>
+
+                <p><b>Project:</b></p>
+                <p><b>Sponsor:</b></p>
+                <br/>
+                
                 <div>
-                    <p><b>Coach: </b>{team.coach.first_name} {team.coach.last_name}</p>{/* when needed we can change this to loop through the coaches */}
-                    <p><b>Email: </b>{team.coach.email}</p>
-                    <p><b>Cell Phone:</b>{team.coach.phone}</p>
+                    <h2 className="text-[20px]">Coaches</h2>
+                    {(team.coach) && <img alt={"coach picture"} src={`http://localhost:3001/assets/${team.coach.photo}`} className='user-image'/>}
+                    <p><b>Coach: </b>{(team.coach) && (team.coach.first_name + " " + team.coach.last_name)}</p>{/* when needed we can change this to loop through the coaches */}
+                    <p><b>Email: </b>{(team.coach) && team.coach.email}</p>
+                    <p><b>Cell Phone:</b>{(team.coach) && team.coach.phone}</p>
                 </div>
-            }
-            {/* makes sure endpoint returns the grading coaches as user objects, not just the ids */}
-            <p><b>Grading Coach 1: </b>{/*team.grading_coach_one.first_name} {team.grading_coach_one.last_name*/}</p>
-            <p><b>Grading Coach 2: </b>{/*team.grading_coach_two.first_name} {team.grading_coach_two.last_name*/}</p>
-            {team.students.map((student) => 
-                <UserTeamLine student={student} />
-            )}
-        </div>
+                <br/>
+                {/* makes sure endpoint returns the grading coaches as user objects, not just the ids */}
+                {/*<p><b>Grading Coach 1: </b>{team.grading_coach_one.first_name} {team.grading_coach_one.last_name}</p>
+                <p><b>Grading Coach 2: </b>{team.grading_coach_two.first_name} {team.grading_coach_two.last_name}</p>*/}
+                <h2 className="text-[20px]">Students</h2>
+                {team.students.map((student) => 
+                    <UserTeamLine student={student} />
+                )}
+            </div>
+        </>
     );
 }

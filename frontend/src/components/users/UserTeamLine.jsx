@@ -2,6 +2,7 @@ export default function UserTeamLine({student}) {
     return (
         <div>
             <br/>
+            <img alt={"student picture"} src={`http://localhost:3001/assets/${student.photo}`} className='user-image'/>
             <p><b>Student: </b>{student.first_name} {student.last_name}</p>
             <p><b>Phone Number: </b>{student.phone}</p>
             <p><b>NetId: </b>{student.net_id}</p>

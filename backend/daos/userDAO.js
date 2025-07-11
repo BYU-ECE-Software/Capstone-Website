@@ -28,10 +28,12 @@ exports.findByTeamId = async (id) => {
 
 // return the teams coach(s?)
 exports.coachByTeamId = async (id) => {
-    const coachSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
+    // const coachSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
+    const coachSql = `SELECT * FROM users LEFT JOIN team_coaches ON users.user_id = team_coaches.coach_id 
+        WHERE team_coaches.team_id = ? AND users.role_id = ?`;
     const coachRole = 2;
     const [rows] = await pool.query(coachSql, [id, coachRole]);
-    return rows[0]; // will need to change to support multiple coaches
+    return rows; // will need to change to support multiple coaches
 }
 
 // return all the users in the database

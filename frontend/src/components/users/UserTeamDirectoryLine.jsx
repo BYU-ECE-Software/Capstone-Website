@@ -3,9 +3,7 @@ import React from 'react';
 import './UserTeamDirectoryLine.css';
 
 export default function UserTeamDirectoryLine({ student }) {
-    return (
-        <>
-        
+    return ( 
         <div className='user-line-table'>
             <div className='user-line-column'>
                 <p><b>Student: </b> {student.first_name + " " + student.last_name}</p>
@@ -20,6 +18,5 @@ export default function UserTeamDirectoryLine({ student }) {
                 <img alt="Student Profile Pic" src={`http://localhost:3001/assets/${student.photo}`} className='student-profile' /> {/* how to not hardcode the server? */}
             </div>
         </div>
-        </>
     );
 } //<hr className='entry-divider'/>

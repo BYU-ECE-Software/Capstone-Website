@@ -100,7 +100,16 @@ function insertLine(tableName, data) {
 
 function createTestData() {
     for (let i = 0; i < users.length; i++) {
-        insertLine("users", users[i]); // uncomment to append the contents of the users dictionary to the users table
+        if (users[i].role_id == 1) {
+            insertLine("users", users[i]);
+        } else if (users[i].role_id == 2) {
+            // UNTESTED!! I have just manually set up my team_coaches table. Please try this and let me (Mason) know if it doesn't work
+            const teamId = users[i].team_id;
+            const coach = {...users[i]}; // is this by reference?
+            coach.team_id = null; // will this change the original users array?
+            insertLine("users", coach);
+            insertLine("team_coaches", {team_id: teamId, coach_id: coach.user_id})
+        }
     }
     for (let i = 0; i < teams.length; i++) {
         insertLine("teams", teams[i]); // uncomment to append the contents of the teams dictionary to the teams table

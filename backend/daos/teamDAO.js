@@ -1,6 +1,6 @@
 const pool = require('../db/connection');
 
-// given a user id, return a dictionary of their info
+// given a team id, return a dictionary of their info
 exports.findById = async (id) => {
     const teamSql = `SELECT
         team_id,

@@ -7,23 +7,13 @@ exports.findById = async (id) => {
     return rows[0];
 };
 
-// return all the users on a given team
+// return all the students on a given team
 exports.findByTeamId = async (id) => {
     const studentSql = "SELECT * FROM users WHERE team_id = ? AND role_id = ?";
     const studentRole = 1;
     const [rows] = await pool.query(studentSql, [id, studentRole]);
     
     return rows;
-    // return new Promise((resolve, reject) => {
-    //     pool.query(studentSql, [id, studentRole], (err, results) => {
-    //         if (err) return reject(err);
-    //         if (results.length > 0) {
-    //             resolve(results);
-    //         } else {
-    //             resolve(results[0]);
-    //         }
-    //     });
-    // });
 }
 
 // return the teams coach(s?)

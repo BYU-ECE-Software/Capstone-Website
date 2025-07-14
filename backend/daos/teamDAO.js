@@ -51,12 +51,21 @@ exports.insertTeam = async (team) => {
             [res] = await connection.query(createSql, values); // need to convert this to an array from a dictionary
         }
 
+        // this probably should be done in the userDAO and then just called from here.
         const students = team.students;
         if (students) {
             for (var i = 0; i < students.length; i++) {
                 await connection.query('UPDATE users SET team_id = ? WHERE user_id = ?', [res.insertId, students[i].user_id]);
             }
         }
+
+        const coaches = team.coach;
+        if (coaches) {
+            for (var i = 0; i < coaches.length; i++) {
+                await connection.query('INSERT INTO team_coaches (team_id, coach_id) VALUES (?,?)', [res.insertId, coaches[i].user_id]);
+            }
+        }
+
         await connection.commit();
         return {team: {...team.team, team_id: res ? res.insertId : null}, students: students, coach: [team.coach]};
     } catch (err) {
@@ -104,6 +113,7 @@ exports.updateTeam = async (teamId, team) => {
             [res] = await connection.query(updateSql, values);
         }
 
+        // all this logic should probably be done inside the userDAO and just exported as a function to be called here
         const students = team.students;
         if (students) {
             // remove the students that were removed by the user
@@ -116,6 +126,16 @@ exports.updateTeam = async (teamId, team) => {
                 await connection.query('UPDATE users SET team_id = ? WHERE user_id = ?', [teamId, addedStudentIds[i]]);
             }
         }
+
+        const coaches = team.coach;
+        if (coaches) {
+            // this might not be the most efficient, but probably the easiest way to do this is to delete all coaches from this team then reinsert the passed in ones
+            await connection.query('DELETE FROM team_coaches WHERE team_id = ?', [teamId]);
+            for (var i = 0; i < coaches.length; i++) {
+                await connection.query('INSERT INTO team_coaches (team_id, coach_id) VALUES (?,?)', [teamId, coaches[i].user_id]);
+            }
+        }
+        
         await connection.commit();
 
         return {...team}

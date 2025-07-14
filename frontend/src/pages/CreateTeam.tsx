@@ -1,11 +1,12 @@
 import { createTeam } from '../api/endpointCalls';
 import TeamForm from '../components/TeamForm';
+import { Team } from '../types/team';
 
 
     
 
 export default function CreateTeam () {
-    const handleCreateTeam = async (data) => {
+    const handleCreateTeam = async (data: Team) => {
         //call endpoint to post team
         const created = await createTeam(data);
         console.log(created);

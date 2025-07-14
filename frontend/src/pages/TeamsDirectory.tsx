@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TeamProfile from '../components/TeamProfile';
 import PageTitle from '../components/pageTitle';
 import { fetchTeamIds } from '../api/endpointCalls';
+import type { TeamId } from '../types/teamId';
+
 
 export default function TeamDirectory() {
-    const [teams, setTeams] = useState(null);
+    const [teams, setTeams] = useState<TeamId[] | null>(null);
 
     useEffect(() => {
         fetchTeamIds()

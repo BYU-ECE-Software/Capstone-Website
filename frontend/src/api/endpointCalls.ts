@@ -5,6 +5,7 @@
 import { Coach } from "../types/coach";
 import { Student } from "../types/student";
 import { Team } from "../types/team";
+import { TeamId } from "../types/teamId";
 
 /**
  * Export functions that do the useEffect.fetch stuff so that we don't have to do it in every component that accesses the server
@@ -41,7 +42,7 @@ export async function fetchOrders() {
   return await response.json();
 };
 
-export async function fetchTeamIds(): Promise<number[]> {
+export async function fetchTeamIds(): Promise<TeamId[]> {
     const response = await fetch(`/teams`);
     if (!response.ok) throw new Error('Failed to fetch teams');
     return await response.json();

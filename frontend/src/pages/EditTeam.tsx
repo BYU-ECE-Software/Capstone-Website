@@ -2,20 +2,21 @@ import { useParams, useNavigate } from 'react-router-dom';
 import TeamForm from '../components/TeamForm';
 import { useEffect, useState } from 'react';
 import { editTeam, fetchTeamById } from '../api/endpointCalls';
+import { Team } from '../types/team';
 
 export default function EditTeam() {
-    const { id } = useParams();
-    const [team, setTeam] = useState(null);
+    const { id } = useParams<{ id?: string }>();
+    const [team, setTeam] = useState<Team | null>(null);
     
     useEffect(() => {
-        fetchTeamById(id)
+        fetchTeamById(parseInt(id!))
         .then((data) => {
             setTeam(data);
         })
         .catch((err) => console.error(err));
     }, [id]);
     
-    const updateTeam = async (data) => {
+    const updateTeam = async (data: Team) => {
         //call endpoint to put team
         const updated = await editTeam(data.team.team_id, data);
         return updated;
@@ -27,7 +28,7 @@ export default function EditTeam() {
             <h2 className="text-2xl text-byuNavy font-semibold mb-4">
                 Edit Team {id}
             </h2>
-            <TeamForm initialData={team} onSubmit={updateTeam} submitLabel={"Save"} cancelRedirect={`/teams/${team.team_id}`}/>
+            <TeamForm initialData={team} onSubmit={updateTeam} submitLabel={"Save"} cancelRedirect={`/teams/${team.team.team_id}`}/>
         </div>
     );
 }

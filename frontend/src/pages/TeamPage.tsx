@@ -4,30 +4,35 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchTeamById } from "../api/endpointCalls";
 import UserTeamLine from "../components/users/UserTeamLine";
+import { Team } from "../types/team";
 
 
 export default function TeamPage() {
-    const [team, setTeam] = useState(null);
-    const { id } = useParams();
+    const [team, setTeam] = useState<Team | null>(null);
+    const { id } = useParams<{ id?: string }>();
+    const [error, setError] = useState<string | null>(null);
     
     useEffect(() => {
-        fetchTeamById(id)
+        fetchTeamById(parseInt(id!))
         .then((data) => {
             setTeam(data);
         })
-        .catch((err) => console.error(err));
+        .catch((err) => {
+            console.error(err);
+            setError("Team not found");
+        });
     });
 
     if (!team) return <p>Loading...</p>;
-    if (team.error) return <p>Team not found</p>
+    if (error) return <p>{error}</p>
 
     return (
         <>
             <div className="max-w-7xl mx-auto mt-4 mb-8 p-6 bg-white shadow-md rounded-md">
-                <h1 className="text-[30px]">{team.team_id}</h1>
-                <h3><b>Team Name: </b>{team.team_name}</h3>
+                <h1 className="text-[30px]">{team.team.team_id}</h1>
+                <h3><b>Team Name: </b>{team.team.team_name}</h3>
                 <p><b>School Year:</b></p>
-                <p>{team.school_year}</p>
+                <p>{team.team.school_year}</p>
                 <br/>
 
                 <p><b>Project:</b></p>
@@ -50,7 +55,7 @@ export default function TeamPage() {
                 <p><b>Grading Coach 2: </b>{team.grading_coach_two.first_name} {team.grading_coach_two.last_name}</p>*/}
                 <h2 className="text-[20px]">Students</h2>
                 {team.students.map((student) => 
-                    <UserTeamLine student={student} />
+                    <UserTeamLine key={student.user_id} student={student} />
                 )}
             </div>
         </>

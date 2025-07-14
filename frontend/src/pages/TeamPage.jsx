@@ -36,10 +36,13 @@ export default function TeamPage() {
                 
                 <div>
                     <h2 className="text-[20px]">Coaches</h2>
-                    {(team.coach) && <img alt={"coach picture"} src={`http://localhost:3001/assets/${team.coach.photo}`} className='user-image'/>}
-                    <p><b>Coach: </b>{(team.coach) && (team.coach.first_name + " " + team.coach.last_name)}</p>{/* when needed we can change this to loop through the coaches */}
-                    <p><b>Email: </b>{(team.coach) && team.coach.email}</p>
-                    <p><b>Cell Phone:</b>{(team.coach) && team.coach.phone}</p>
+                    {(team.coach.length > 0) ? (team.coach.map((coach) => (
+                        <div key={coach.user_id}>
+                            <img alt={"coach picture"} src={`http://localhost:3001/assets/${coach.photo}`} className='user-image'/>
+                            <p><b>Coach: </b>{(coach.first_name + " " + coach.last_name)}</p>{/* when needed we can change this to loop through the coaches */}
+                            <p><b>Email: </b>{coach.email}</p>
+                            <p><b>Cell Phone:</b>{coach.phone}</p>
+                        </div>))) : (<p>No coaches assigned to team</p>)}
                 </div>
                 <br/>
                 {/* makes sure endpoint returns the grading coaches as user objects, not just the ids */}

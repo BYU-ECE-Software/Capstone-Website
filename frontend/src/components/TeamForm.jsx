@@ -93,7 +93,7 @@ export default function TeamForm({ initialData = {}, onSubmit, cancelRedirect, s
         if (initialData && Object.keys(initialData).length > 0) {
             setFormData(prev => {
             const updated = {
-                coach: initialData.coach ? [initialData.coach] : [],
+                coach: initialData.coach ? initialData.coach : [],
                 students: initialData.students || [],
                 team: {
                 ...prev.team,

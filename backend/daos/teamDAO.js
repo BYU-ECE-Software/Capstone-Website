@@ -3,9 +3,7 @@ const pool = require('../db/connection');
 // given a team id, return a dictionary of their info
 exports.findById = async (id) => {
     const teamSql = `SELECT
-        team_id,
-        team_name,
-        logo
+        *
         FROM teams
         WHERE teams.team_id = ?
         GROUP BY teams.team_id, teams.team_name;`;
@@ -42,11 +40,12 @@ exports.insertTeam = async (team) => {
         await connection.beginTransaction();
         var res = null;
         if (subTeam) {
+            console.log(subTeam.email_list);
             const values = [subTeam.team_id, subTeam.school_year, subTeam.grading_coach_1_id, subTeam.grading_coach_2_id,
-                subTeam.ER_director === '' ? null : parseInt(subTeam.ER_director), subTeam.long_distance_access_code === '' ? null : parseInt(subTeam.long_distance_access_code), 
-                subTeam.caedm_group_folder === '' ? null : parseInt(subTeam.caedm_group_folder), subTeam.project === '' ? null : parseInt(subTeam.project),
-                subTeam.logo, subTeam.team_name, subTeam.email_list, subTeam.team_box_folder === '' ? null : parseInt(subTeam.team_box_folder), 
-                subTeam.class_document_folder === '' ? null : parseInt(subTeam.class_document_folder)
+                subTeam.ER_director, subTeam.long_distance_access_code, 
+                subTeam.caedm_group_folder, subTeam.project,
+                subTeam.logo, subTeam.team_name, subTeam.email_list.join(","), subTeam.team_box_folder, 
+                subTeam.class_document_folder,
             ];
             [res] = await connection.query(createSql, values); // need to convert this to an array from a dictionary
         }
@@ -104,10 +103,10 @@ exports.updateTeam = async (teamId, team) => {
         var res = null;
         if (subTeam) {
             const values = [subTeam.team_number, subTeam.school_year, subTeam.grading_coach_1_id, subTeam.grading_coach_2_id,
-                subTeam.ER_director === '' ? null : parseInt(subTeam.ER_director), subTeam.long_distance_access_code === '' ? null : parseInt(subTeam.long_distance_access_code), 
-                subTeam.caedm_group_folder === '' ? null : parseInt(subTeam.caedm_group_folder), subTeam.project === '' ? null : parseInt(subTeam.project),
-                subTeam.logo, subTeam.team_name, subTeam.email_list, subTeam.team_box_folder === '' ? null : parseInt(subTeam.team_box_folder), 
-                subTeam.class_document_folder === '' ? null : parseInt(subTeam.class_document_folder),
+                subTeam.ER_director, subTeam.long_distance_access_code, 
+                subTeam.caedm_group_folder, subTeam.project,
+                subTeam.logo, subTeam.team_name, subTeam.email_list, subTeam.team_box_folder, 
+                subTeam.class_document_folder,
                 teamId
             ];
             [res] = await connection.query(updateSql, values);
@@ -145,4 +144,18 @@ exports.updateTeam = async (teamId, team) => {
     } finally {
         connection.release();
     }
+};
+
+exports.deleteTeam = async (id) => {
+    // must first go through and remove all references to this team from users (students) and team_coaches
+    // this means we need to pass the entire team in in order to do that, then run a similar process to the above functions
+    // or just pull it straight from the table
+    await pool.query(`DELETE FROM team_coaches WHERE team_id = ?`, [id]);
+    await pool.query(`UPDATE users SET team_id = NULL WHERE team_id = ?`, [id]);
+    const teamSql = `DELETE FROM teams
+        WHERE teams.team_id = ?`;
+
+    await pool.query(teamSql, [id]);
+
+    return;
 };

@@ -38,4 +38,8 @@ exports.createTeam = async (team) => {
 exports.updateTeam = async (teamId, team) => {
     const updated = await teamDAO.updateTeam(teamId, team);
     return updated;
-}
+};
+
+exports.deleteTeam = async (teamId) => {
+    await teamDAO.deleteTeam(teamId);
+};

@@ -1,34 +1,36 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchAllStudents, fetchAllCoaches } from '../api/endpointCalls';
+import { fetchAllStudents, fetchAllCoaches, deleteTeam } from '../api/endpointCalls';
 import CustomSelect from './custom_select/customSelect';
 import { Team } from '../types/team';
 import { Student } from '../types/student';
 import { Coach } from '../types/coach';
 import { Option } from '../types/option';
+import { TeamFormData } from '../types/teamFormData';
 
 interface TeamFormProps {
-    initialData?: Team;
+    initialData?: TeamFormData;
     onSubmit: (team: Team) => Promise<Team>;
     cancelRedirect: string;
     submitLabel: string;
+    deleteButton: boolean;
 }
 
-const emptyTeam = (): Team => ({
+const emptyTeam = (): TeamFormData => ({
     team: {
         team_id: 0,
         team_number: '',
         school_year: '',
-        ER_director: 0,
-        long_distance_access_code: 0,
-        caedm_group_folder: 0,
-        project: 0,
+        ER_director: null,
+        long_distance_access_code: null,
+        caedm_group_folder: null,
+        project: null,
         external_review_coach: [],
         logo: '',
         team_name: '',
         email_list: [],
-        team_box_folder: 0,
-        class_document_folder: 0,
+        team_box_folder: null,
+        class_document_folder: null,
         grading_coach_one: null,
         grading_coach_two: null
     },
@@ -36,8 +38,8 @@ const emptyTeam = (): Team => ({
     students: [],
 });
 
-export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRedirect, submitLabel}: TeamFormProps) {
-    const [formData, setFormData] = useState<Team>(emptyTeam());
+export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRedirect, submitLabel, deleteButton}: TeamFormProps) {
+    const [formData, setFormData] = useState<TeamFormData>(emptyTeam());
     //     {
     //     coach: [],
     //     students: [],
@@ -160,8 +162,27 @@ export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRe
         // console.log(fd.entries().team);
         // if (logo) fd.append('logo', logo);
         // console.log(fd);
+
+        const parseNumOrNull = (num: string | null) => {
+            if (!num) return null;
+            const parsed = Number(num);
+            return isNaN(parsed) ? null : parsed;
+        };
+
         try {
-            const navTeam: Team = await onSubmit(formData);
+            const cleanedTeam: Team = {
+                ...formData,
+                team: {
+                    ...formData.team,
+                    ER_director: parseNumOrNull(formData.team.ER_director),
+                    long_distance_access_code: parseNumOrNull(formData.team.long_distance_access_code),
+                    caedm_group_folder: parseNumOrNull(formData.team.caedm_group_folder),
+                    project: parseNumOrNull(formData.team.project),
+                    team_box_folder: parseNumOrNull(formData.team.team_box_folder),
+                    class_document_folder: parseNumOrNull(formData.team.class_document_folder),
+                }
+            };
+            const navTeam: Team = await onSubmit(cleanedTeam);
             navigate(`/teams/${navTeam.team.team_id}`);
         } catch (err) {
             console.error(err);
@@ -172,7 +193,18 @@ export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRe
         try {
             navigate(cancelRedirect);
         } catch (err) {
-            console.log(err);
+            console.error(err);
+        }
+    };
+
+    const onDelete = async (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        try {
+            await deleteTeam(formData.team.team_id);
+            console.log("Team deleted");
+            navigate('/teams');
+        } catch (err) {
+            console.error(err);
         }
     };
 
@@ -318,19 +350,19 @@ export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRe
                 formData.team.grading_coach_two.first_name + " " + formData.team.grading_coach_two.last_name : ""} onChange={handleChange} />
             <label className="block font-medium">ER Director</label>
             <input className="w-full border border-gray-300 rounded p-2" 
-                name="ER_director" type="text" value={formData.team.ER_director} onChange={handleChange} />
+                name="ER_director" type="text" value={formData.team.ER_director??0} onChange={handleChange} />
             <label className="block font-medium">Long Distance Access Code</label>
             <input className="w-full border border-gray-300 rounded p-2" 
-                name="long_distance_access_code" type="text" value={formData.team.long_distance_access_code} onChange={handleChange} />
+                name="long_distance_access_code" type="text" value={formData.team.long_distance_access_code??0} onChange={handleChange} />
             <label className="block font-medium">CAEDM Group Folder</label>
             <input className="w-full border border-gray-300 rounded p-2" 
-                name="caedm_group_folder" type="text" value={formData.team.caedm_group_folder} onChange={handleChange} />
+                name="caedm_group_folder" type="text" value={formData.team.caedm_group_folder??0} onChange={handleChange} />
             <label className="block font-medium">Project</label>
             <input className="w-full border border-gray-300 rounded p-2" 
-                name="project" type="text" value={formData.team.project} onChange={handleChange} />
+                name="project" type="text" value={formData.team.project??0} onChange={handleChange} />
             <label className="block font-medium">External Review Coach</label>
             <input className="w-full border border-gray-300 rounded p-2" 
-                name="external_review_coach" type="text" value={formData.team.external_review_coach.join(", ")} onChange={handleChange} />
+                name="external_review_coach" type="text" value={formData.team.external_review_coach! ? formData.team.external_review_coach.join(", ") : ""} onChange={handleChange} />
             <label className="block font-medium">Logo</label>
             <input className="w-full border border-gray-300 rounded p-2" 
                 name="logo" type="file" onChange={handleLogoChange} accept='.png,.jpg,.jpeg'/> {/*value={formData.team.logo}*/}
@@ -345,14 +377,14 @@ export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRe
                 name="email_list" type="text" value={formData.team.email_list} onChange={handleChange} />
             <label className="block font-medium">Team Box Folder</label>
             <input className="w-full border border-gray-300 rounded p-2" 
-                name="team_box_folder" type="text" value={formData.team.team_box_folder} onChange={handleChange} />
+                name="team_box_folder" type="text" value={formData.team.team_box_folder??0} onChange={handleChange} />
             <button type="button"
                 className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a] mt-2">
                 Build Team Box Folder
             </button>
             <label className="block font-medium">Class Document Folder</label>
             <input className="w-full border border-gray-300 rounded p-2" 
-                name="class_document_folder" type="text" value={formData.team.class_document_folder} onChange={handleChange} />
+                name="class_document_folder" type="text" value={formData.team.class_document_folder??0} onChange={handleChange} />
             <button type="button"
                 className="px-6 py-2 bg-byuRoyal text-white font-semibold rounded hover:bg-[#003a9a] mt-2">
                 Build Class Document Folder
@@ -366,7 +398,14 @@ export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRe
                     className="px-6 py-2 bg-byuMediumGray text-white font-semibold rounded hover:bg-[#202224] ml-4">
                     Cancel
                 </button>
-                {/* future feature TODO delete button for Edit */}
+                {deleteButton &&
+                <button type="button" onClick={(e) => {
+                                if (window.confirm("Are you sure you want to delete this team?")) {
+                                    onDelete(e);       
+                                }}}
+                    className="ml-4 rounded bg-red-600 px-6 py-2 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-slate-500">
+                    Delete
+                </button>}
             </div>
         </form>
     );

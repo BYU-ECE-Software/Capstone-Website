@@ -75,7 +75,6 @@ export async function createTeam(formData: Team): Promise<any> {
 }
 
 export async function editTeam(teamId: number, formData: Team): Promise<any> {
-  console.log(formData);
   const response = await fetch(`/teams/${teamId}`,
       {
         method:'PUT',
@@ -84,5 +83,17 @@ export async function editTeam(teamId: number, formData: Team): Promise<any> {
       },
   );
   if (!response.ok) throw new Error('Failed to update team');
+  return await response.json();
+}
+
+export async function deleteTeam(teamId: number): Promise<any> {
+  //TODO make this function
+  const response = await fetch(`/teams/${teamId}`,
+    {
+      method:'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+    },
+  );
+  if (!response.ok) throw new Error('Failed to delete team');
   return await response.json();
 }

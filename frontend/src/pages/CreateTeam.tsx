@@ -9,7 +9,6 @@ export default function CreateTeam () {
     const handleCreateTeam = async (data: Team) => {
         //call endpoint to post team
         const created = await createTeam(data);
-        console.log(created);
         // temp fix TODO modify backend so it returns team_id nested (rn it doesn't return it anywhere)
         return created;// {team: {team_id: created.team_id}};
     }
@@ -18,7 +17,7 @@ export default function CreateTeam () {
             <h2 className="text-2xl text-byuNavy font-semibold mb-4">
                 Create New Team
             </h2>
-            <TeamForm onSubmit={handleCreateTeam} submitLabel={"Create"} cancelRedirect={"/teams"}/>
+            <TeamForm onSubmit={handleCreateTeam} submitLabel={"Create"} cancelRedirect={"/teams"} deleteButton={false}/>
         </div>
     ); // possible to redirect to previous page? Home page? What do we want here?
 }

@@ -75,13 +75,14 @@ export async function createTeam(formData: Team): Promise<any> {
 }
 
 export async function editTeam(teamId: number, formData: Team): Promise<any> {
-    const response = await fetch(`/teams/${teamId}`,
-        {
-          method:'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        },
-    );
-    if (!response.ok) throw new Error('Failed to update team');
-    return await response.json();
+  console.log(formData);
+  const response = await fetch(`/teams/${teamId}`,
+      {
+        method:'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      },
+  );
+  if (!response.ok) throw new Error('Failed to update team');
+  return await response.json();
 }

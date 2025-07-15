@@ -1,10 +1,6 @@
 import React, { useState, useRef, useEffect, memo } from 'react';
 import './custom_select.css';
-
-interface Option {
-    label: string;
-    value: string;
-}
+import type { Option } from '../../types/option';
 
 interface CustomSelectProps {
     options: Option[];

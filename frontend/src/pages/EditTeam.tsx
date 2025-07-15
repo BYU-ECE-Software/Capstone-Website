@@ -18,6 +18,7 @@ export default function EditTeam() {
     
     const updateTeam = async (data: Team) => {
         //call endpoint to put team
+        console.log(data); // why are all the attributes empty?
         const updated = await editTeam(data.team.team_id, data);
         return updated;
     };

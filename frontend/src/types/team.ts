@@ -9,8 +9,8 @@ export interface Team {
         team_id: number,
         team_number: string,
         school_year: string,
-        grading_coach_one: Coach,
-        grading_coach_two: Coach,
+        grading_coach_one: Coach | null,
+        grading_coach_two: Coach | null,
         ER_director: number, // Coach?
         long_distance_access_code: number,
         caedm_group_folder: number,

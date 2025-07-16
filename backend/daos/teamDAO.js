@@ -40,7 +40,6 @@ exports.insertTeam = async (team) => {
         await connection.beginTransaction();
         var res = null;
         if (subTeam) {
-            console.log(subTeam.email_list);
             const values = [subTeam.team_id, subTeam.school_year, subTeam.grading_coach_1_id, subTeam.grading_coach_2_id,
                 subTeam.ER_director, subTeam.long_distance_access_code, 
                 subTeam.caedm_group_folder, subTeam.project,

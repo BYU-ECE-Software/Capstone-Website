@@ -222,7 +222,6 @@ export default function TeamForm({ initialData = emptyTeam(), onSubmit, onCancel
 
     //If a coach is removed from a team, remove them from the team and add them to the dropdown
     const handleRemoveCoach = useCallback((userId: number) => {
-        // TODO add a confirmation popup
         const coach = formData.coach.find(s => s.user_id === userId);
         if (!coach) return;
         setAllCoaches(prev => {

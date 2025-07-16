@@ -87,13 +87,16 @@ export async function editTeam(teamId: number, formData: Team): Promise<any> {
 }
 
 export async function deleteTeam(teamId: number): Promise<any> {
-  //TODO make this function
-  const response = await fetch(`/teams/${teamId}`,
-    {
-      method:'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-    },
-  );
-  if (!response.ok) throw new Error('Failed to delete team');
-  return await response.json();
+  try {
+    const response = await fetch(`/teams/${teamId}`,
+      {
+        method:'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+    if (!response.ok) throw new Error('Failed to delete team');
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+  }
 }

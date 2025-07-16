@@ -45,10 +45,7 @@ export default function EditTeam() {
     const onDelete = async (e: React.FormEvent<HTMLButtonElement>) => {
         e.preventDefault();
         try {
-            console.log("Deleting team");
-            await deleteTeam(team!.team.team_id);//!!id ? parseInt(id): 0);
-            // TODO code isn't making it to this point
-            console.log("Team deleted");
+            const result = await deleteTeam(team!.team.team_id);//!!id ? parseInt(id): 0);
             navigate('/teams');
         } catch (err) {
             console.error(err);

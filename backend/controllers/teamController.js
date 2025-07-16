@@ -55,7 +55,7 @@ exports.deleteTeam = async (req, res) => {
     try {
         const teamId = req.params.teamId;
         await teamService.deleteTeam(teamId);
-        res.status(204);
+        res.status(204).send();
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error' });

@@ -1,25 +1,33 @@
 import React, { useState, useRef, useEffect, memo } from 'react';
 import './custom_select.css';
+import type { Option } from '../../types/option';
 
-function CustomSelect({ options, onSelect, placeholder = 'Select an option' }) {
-    const [inputValue, setInputValue] = useState('');
-    const [isOpen, setIsOpen] = useState(false);
-    const [highlightedIndex, setHighlightedIndex] = useState(0);
-    const [filteredOptions, setFilteredOptions] = useState(options);
-    const containerRef = useRef();
+interface CustomSelectProps {
+    options: Option[];
+    onSelect: (option: Option) => void;
+    placeholder?: string;
+}
 
-    useEffect(() => {
-    setFilteredOptions(
-        options.filter(option =>
-        option.label.toLowerCase().includes(inputValue.toLowerCase())
-        )
-    );
-    //setHighlightedIndex(0);
-    }, [inputValue, options]);
+function CustomSelect({ options, onSelect, placeholder = 'Select an option' }: CustomSelectProps) {
+    const [inputValue, setInputValue] = useState<string>('');
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [highlightedIndex, setHighlightedIndex] = useState<number>(0);
+    const [filteredOptions, setFilteredOptions] = useState<Option[]>(options);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-    const handleClickOutside = (e) => {
-        if (containerRef.current && !containerRef.current.contains(e.target)) {
+        const filtered = options.filter(option =>
+            option.label.toLowerCase().includes(inputValue.toLowerCase()));
+        if (!(filteredOptions.length === filtered.length &&
+                filteredOptions.every((opt, i) => opt.value === filtered[i].value))
+        ) { 
+                setFilteredOptions(filtered);
+        }
+    }, [inputValue, options, filteredOptions, setFilteredOptions]);
+
+    useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+        if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
         }
     };
@@ -27,7 +35,7 @@ function CustomSelect({ options, onSelect, placeholder = 'Select an option' }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleKeyDown = (e) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!isOpen) return;
 
     if (e.key === 'ArrowDown') {
@@ -47,7 +55,7 @@ function CustomSelect({ options, onSelect, placeholder = 'Select an option' }) {
     }
     };
 
-    const handleSelect = (option) => {
+    const handleSelect = (option: Option) => {
     onSelect(option);
     setInputValue('');
     setIsOpen(false);

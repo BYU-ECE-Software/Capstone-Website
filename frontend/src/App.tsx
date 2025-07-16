@@ -23,8 +23,8 @@ function App() {
       <Routes>
         <Route path="/teams" element={<TeamsLayout />}>
           <Route index element={<TeamsDirectory />} />
-          <Route path=":id" element={<TeamPage />} />
           <Route path="create" element={<CreateTeam />} />
+          <Route path=":id" element={<TeamPage />} />
           <Route path="edit/:id" element={<EditTeam />} />
         </Route>
         <Route path="/purchaseRequest" element={<PurchaseRequest />} />

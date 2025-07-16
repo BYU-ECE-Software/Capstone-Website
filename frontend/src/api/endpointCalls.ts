@@ -1,14 +1,24 @@
 /**
+ * Import the datatypes used by the frontend
+ */
+
+import { Coach } from "../types/coach";
+import { Student } from "../types/student";
+import { Team } from "../types/team";
+import { TeamId } from "../types/teamId";
+
+/**
  * Export functions that do the useEffect.fetch stuff so that we don't have to do it in every component that accesses the server
  */
 
-exports.fetchTeamById = async (id) => {
+export async function fetchTeamById(id: number): Promise<Team> {
   const response = await fetch(`/teams/${id}`);
   if (!response.ok) throw new Error("Failed to fetch team");
   return await response.json();
 };
 
-exports.submitPurchaseRequest = async (orderData) => {
+// WAIT FOR LARA's updated tested code.
+export async function submitPurchaseRequest(orderData: any): Promise<any> {
   const response = await fetch("/orders", {
     method: "POST",
     headers: {
@@ -26,38 +36,33 @@ exports.submitPurchaseRequest = async (orderData) => {
   return await response.json();
 };
 
-exports.fetchOrders = async () => {
+export async function fetchOrders() {
   const response = await fetch(`/orders`);
   if (!response.ok) throw new Error("Failed to fetch orders");
   return await response.json();
 };
 
-exports.fetchTeamIds = async () => {
+export async function fetchTeamIds(): Promise<TeamId[]> {
     const response = await fetch(`/teams`);
     if (!response.ok) throw new Error('Failed to fetch teams');
     return await response.json();
 }
 
 // This endpoint returns all students who have NOT been assigned to a team
-exports.fetchAllStudents = async () => {
+export async function fetchAllStudents(): Promise<Student[]> {
     const response = await fetch(`/users?role=1`); // prolly don't hardcode
     if (!response.ok) throw new Error('Failed to fetch students');
     return await response.json();
 }
 
 // Return all coaches (team or not)
-exports.fetchAllCoaches = async () => {
+export async function fetchAllCoaches(): Promise<Coach[]> {
     const response = await fetch(`/users?role=2`); // also don't hardcode
     if (!response.ok) throw new Error('Failed to fetch coaches');
     return await response.json();
 }
 
-exports.createTeam = async (formData) => {
-    const team = {
-        team: formData.team,
-        coach: formData.coach,
-        students: formData.students,
-    };
+export async function createTeam(formData: Team): Promise<any> {
     const response = await fetch(`/teams/`,
         {
           method:'POST',
@@ -69,14 +74,29 @@ exports.createTeam = async (formData) => {
     return await response.json();
 }
 
-exports.editTeam = async (teamId, formData) => {
+export async function editTeam(teamId: number, formData: Team): Promise<any> {
+  const response = await fetch(`/teams/${teamId}`,
+      {
+        method:'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      },
+  );
+  if (!response.ok) throw new Error('Failed to update team');
+  return await response.json();
+}
+
+export async function deleteTeam(teamId: number): Promise<any> {
+  try {
     const response = await fetch(`/teams/${teamId}`,
-        {
-          method:'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        },
+      {
+        method:'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      },
     );
-    if (!response.ok) throw new Error('Failed to update team');
+    if (!response.ok) throw new Error('Failed to delete team');
     return await response.json();
+  } catch (err) {
+    console.error(err);
+  }
 }

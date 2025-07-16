@@ -12,7 +12,7 @@ exports.getTeamById = async (req, res) => {
         res.json(team);
     } catch (err) {
         console.error(err); // for debugging
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
@@ -33,10 +33,9 @@ exports.updateTeam = async (req, res) => {
         const updated = await teamService.updateTeam(teamId, team);
         res.status(200); // possibly 204
         res.send(updated);
-        // console.log(updated);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal server errror' });
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
@@ -48,6 +47,17 @@ exports.createTeam = async (req, res) => {
         res.send(created);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: 'Internal server errror' });
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+exports.deleteTeam = async (req, res) => {
+    try {
+        const teamId = req.params.teamId;
+        await teamService.deleteTeam(teamId);
+        res.status(204).send();
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
     }
 }

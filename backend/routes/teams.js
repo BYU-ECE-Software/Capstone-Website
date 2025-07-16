@@ -5,7 +5,8 @@ const teamController = require('../controllers/teamController');
 // get the param from the url and pass to controller
 router.route('/:teamId')
     .put(teamController.updateTeam)
-    .get(teamController.getTeamById);
+    .get(teamController.getTeamById)
+    .delete(teamController.deleteTeam);
 
 // get all the users
 router.route('/')

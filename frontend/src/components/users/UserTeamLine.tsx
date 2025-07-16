@@ -1,4 +1,6 @@
-export default function UserTeamLine({student}) {
+import { Student } from "../../types/student";
+
+export default function UserTeamLine({student}: {student: Student}) {
     return (
         <div>
             <br/>

@@ -43,7 +43,7 @@ export default function TeamPage() {
                     <h2 className="text-[20px]">Coaches</h2>
                     {(team.coach.length > 0) ? (team.coach.map((coach) => (
                         <div key={coach.user_id}>
-                            <img alt={"coach picture"} src={`http://localhost:3001/assets/${coach.photo}`} className='user-image'/>
+                            <img alt={"coach"} src={`http://localhost:3001/assets/${coach.photo}`} className='user-image'/>
                             <p><b>Coach: </b>{(coach.first_name + " " + coach.last_name)}</p>{/* when needed we can change this to loop through the coaches */}
                             <p><b>Email: </b>{coach.email}</p>
                             <p><b>Cell Phone:</b>{coach.phone}</p>

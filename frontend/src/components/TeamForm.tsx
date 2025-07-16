@@ -11,9 +11,10 @@ import { TeamFormData } from '../types/teamFormData';
 interface TeamFormProps {
     initialData?: TeamFormData;
     onSubmit: (team: Team) => Promise<Team>;
-    cancelRedirect: string;
+    onCancel: (e: React.FormEvent<HTMLButtonElement>) => Promise<void>;
     submitLabel: string;
     deleteButton: boolean;
+    onDelete: (e: React.FormEvent<HTMLButtonElement>) => Promise<void>;
 }
 
 const emptyTeam = (): TeamFormData => ({
@@ -38,7 +39,7 @@ const emptyTeam = (): TeamFormData => ({
     students: [],
 });
 
-export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRedirect, submitLabel, deleteButton}: TeamFormProps) {
+export default function TeamForm({ initialData = emptyTeam(), onSubmit, onCancel, submitLabel, deleteButton, onDelete}: TeamFormProps) {
     const [formData, setFormData] = useState<TeamFormData>(emptyTeam());
     //     {
     //     coach: [],
@@ -128,31 +129,11 @@ export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRe
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
             setFormData(initialData);
-            // setFormData(prev => {
-            //     const updated: Team = {
-            //         coach: initialData.coach ?? [],
-            //         students: initialData.students ?? [],
-            //         team: {
-            //         ...prev.team,
-            //         },
-            //     };
-
-            //     // Copy only keys that belong in `team`
-            //     const teamKeys = Object.keys(initialData.team) as (keyof typeof initialData.team)[];
-            //     for (const key in teamKeys) {
-            //         if (key in teamKeys) {
-            //             updated.team[key] = initialData.team[key];
-            //         }
-            //     }
-
-            //     return updated;
-            // });
         }
-    }, [initialData]);
+    }, []);
 
 
     //When the user clicks the submit button, handle accordingly (be it create or update)
-    const navigate = useNavigate();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -183,30 +164,11 @@ export default function TeamForm({ initialData = emptyTeam(), onSubmit, cancelRe
                 }
             };
             const navTeam: Team = await onSubmit(cleanedTeam);
-            navigate(`/teams/${navTeam.team.team_id}`);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-    const onCancel = async (e: React.FormEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        try {
-            navigate(cancelRedirect);
         } catch (err) {
             console.error(err);
         }
     };
 
-    const onDelete = async (e: React.FormEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        try {
-            await deleteTeam(formData.team.team_id);
-            console.log("Team deleted");
-            navigate('/teams');
-        } catch (err) {
-            console.error(err);
-        }
-    };
 
     //When the user changes a field, change it here in the data
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {

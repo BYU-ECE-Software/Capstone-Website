@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import TeamForm from '../components/TeamForm';
 import { useEffect, useState } from 'react';
-import { editTeam, fetchTeamById } from '../api/endpointCalls';
+import { editTeam, fetchTeamById, deleteTeam } from '../api/endpointCalls';
 import { Team } from '../types/team';
 import { TeamFormData } from '../types/teamFormData';
 
@@ -33,9 +33,31 @@ export default function EditTeam() {
         .catch((err) => console.error(err));
     }, [id]);
     
+    const navigate = useNavigate();
+    const onCancel = async (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        try {
+            navigate(`/teams/${id}`);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    const onDelete = async (e: React.FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        try {
+            console.log("Deleting team");
+            await deleteTeam(team!.team.team_id);//!!id ? parseInt(id): 0);
+            // TODO code isn't making it to this point
+            console.log("Team deleted");
+            navigate('/teams');
+        } catch (err) {
+            console.error(err);
+        }
+    };
     const updateTeam = async (data: Team) => {
         //call endpoint to put team
         const updated = await editTeam(data.team.team_id, data);
+        navigate(`/teams/${updated.team.team_id}`);
         return updated;
     };
 
@@ -45,7 +67,7 @@ export default function EditTeam() {
             <h2 className="text-2xl text-byuNavy font-semibold mb-4">
                 Edit Team {id}
             </h2>
-            <TeamForm initialData={team} onSubmit={updateTeam} submitLabel={"Save"} cancelRedirect={`/teams/${team.team.team_id}`} deleteButton={true}/>
+            <TeamForm initialData={team} onSubmit={updateTeam} submitLabel={"Save"} onCancel={onCancel} deleteButton={true} onDelete={onDelete}/>
         </div>
     );
 }

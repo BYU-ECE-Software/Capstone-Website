@@ -16,13 +16,14 @@ function CustomSelect({ options, onSelect, placeholder = 'Select an option' }: C
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-    setFilteredOptions(
-        options.filter(option =>
-        option.label.toLowerCase().includes(inputValue.toLowerCase())
-        )
-    );
-    //setHighlightedIndex(0);
-    }, [inputValue, options]);
+        const filtered = options.filter(option =>
+            option.label.toLowerCase().includes(inputValue.toLowerCase()));
+        if (!(filteredOptions.length === filtered.length &&
+                filteredOptions.every((opt, i) => opt.value === filtered[i].value))
+        ) { 
+                setFilteredOptions(filtered);
+        }
+    }, [inputValue, options, filteredOptions, setFilteredOptions]);
 
     useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

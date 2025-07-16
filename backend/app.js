@@ -1,12 +1,21 @@
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
+const cors = require("cors");
 require("./auth/samlStrategy"); // why isn't this assigned to a variable?
 
 const app = express();
 
+const frontendURL = "http://localhost:3000"
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors({
+  origin: frontendURL,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}));
 
 app.use(
   session({

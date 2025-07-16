@@ -11,14 +11,17 @@ exports.getTeamById = async (teamId) => {
     if (!team) {
         throw new Error(`Team with ID ${teamId} not found`);
     }
-    team.students = students;
-    team.coach = coaches;
+    
+    const returnTeam = {};
+    returnTeam.team = team;
+    returnTeam.students = students;
+    returnTeam.coach = coaches;
 
-    if (!team.students) { // if there are no students then it will be undefined and that will cause problems on the frontend, we'd rather an empty list
-        team.students = [];
+    if (!returnTeam.students) { // if there are no students then it will be undefined and that will cause problems on the frontend, we'd rather an empty list
+        returnTeam.students = [];
     }
 
-    return team;
+    return returnTeam;
 
 };
 
@@ -35,4 +38,8 @@ exports.createTeam = async (team) => {
 exports.updateTeam = async (teamId, team) => {
     const updated = await teamDAO.updateTeam(teamId, team);
     return updated;
-}
+};
+
+exports.deleteTeam = async (teamId) => {
+    await teamDAO.deleteTeam(teamId);
+};

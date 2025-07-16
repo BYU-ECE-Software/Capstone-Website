@@ -1,8 +1,7 @@
-import React from 'react';
-
 import './UserTeamDirectoryLine.css';
+import { Student } from '../../types/student';
 
-export default function UserTeamDirectoryLine({ student }) {
+export default function UserTeamDirectoryLine({student}: {student: Student}) {
     return ( 
         <div className='user-line-table'>
             <div className='user-line-column'>
@@ -19,4 +18,4 @@ export default function UserTeamDirectoryLine({ student }) {
             </div>
         </div>
     );
-} //<hr className='entry-divider'/>
+}

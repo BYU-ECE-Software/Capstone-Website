@@ -75,7 +75,19 @@ const teams = [
     }
 ];
 
-const connection = await require('../db/connection');
+const vehicle_vendors = [
+    {
+        vehicle_vendor_name: "BYU Vehicle Rentals"
+    },
+    {
+        vehicle_vendor_name: "Enterprise Rent-a-Car"
+    },
+    {
+        vehicle_vendor_name: "Samsung"
+    }
+]
+
+const pool = require('../db/connection');
 
 function insertLine(tableName, data) {
     // Extract columns and values from the object
@@ -88,7 +100,7 @@ function insertLine(tableName, data) {
     // Build SQL query dynamically
     const sql = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${placeholders})`;
 
-    connection.query(sql, values, (err, results) => {
+    pool.query(sql, values, (err, results) => {
         if (err) {
             console.error("Error: ", err);
             return;
@@ -101,18 +113,21 @@ function insertLine(tableName, data) {
 function createTestData() {
     for (let i = 0; i < users.length; i++) {
         if (users[i].role_id == 1) {
-            insertLine("users", users[i]);
+            //insertLine("users", users[i]);
         } else if (users[i].role_id == 2) {
             // UNTESTED!! I have just manually set up my team_coaches table. Please try this and let me (Mason) know if it doesn't work
-            const teamId = users[i].team_id;
-            const coach = {...users[i]}; // is this by reference?
-            coach.team_id = null; // will this change the original users array?
-            insertLine("users", coach);
-            insertLine("team_coaches", {team_id: teamId, coach_id: coach.user_id})
+            // const teamId = users[i].team_id;
+            // const coach = {...users[i]}; // is this by reference?
+            // coach.team_id = null; // will this change the original users array?
+            // insertLine("users", coach);
+            // insertLine("team_coaches", {team_id: teamId, coach_id: coach.user_id})
         }
     }
     for (let i = 0; i < teams.length; i++) {
-        insertLine("teams", teams[i]); // uncomment to append the contents of the teams dictionary to the teams table
+        //insertLine("teams", teams[i]); // uncomment to append the contents of the teams dictionary to the teams table
+    }
+    for (let i = 0; i < vehicle_vendors.length; i++) {
+        insertLine("vehicle_vendors", vehicle_vendors[i]);
     }
     console.log("Finished inserting test data into database");
 }

@@ -17,5 +17,7 @@ mysql -u root -p"$MYSQL_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS \`$DB_NAME\`
 mysql -u root -p"$MYSQL_PASSWORD" "$DB_NAME" < sql/users.sql
 mysql -u root -p"$MYSQL_PASSWORD" "$DB_NAME" < sql/roles.sql
 mysql -u root -p"$MYSQL_PASSWORD" "$DB_NAME" < sql/teams.sql
+mysql -u root -p"$MYSQL_PASSWORD" "$DB_NAME" < sql/vehicle_requests.sql
+mysql -u root -p"$MYSQL_PASSWORD" "$DB_NAME" < sql/vehicle_vendors.sql
 
 echo "Done executing all SQL files."

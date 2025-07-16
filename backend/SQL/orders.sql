@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS orders (
     shipping DECIMAL(10, 2),
     invoice_total DECIMAL(10, 2),
     budget_total DECIMAL(10, 2),
-    change_state ENUM('Advanced', 'Routine'),
+    complexity ENUM('Advanced', 'Routine'), -- was change_state
     schedule ENUM('Immediately', 'Schedule'),
     comment TEXT,
     description TEXT,
@@ -36,5 +36,7 @@ CREATE TABLE IF NOT EXISTS orders (
     order_state INT,
     vendor INT,
     reference_number NVARCHAR(255),
-    additional_information TEXT
+    additional_information TEXT,
+    FOREIGN KEY (author) REFERENCES users(user_id),
+    FOREIGN KEY (team_id) REFERENCES teams(team_id)
 );

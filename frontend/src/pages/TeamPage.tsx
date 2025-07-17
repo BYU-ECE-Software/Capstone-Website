@@ -1,7 +1,7 @@
 // this will be the page for an individual team. Model somewhat off of the drupal site, then update with what the office says
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { fetchTeamById } from "../api/endpointCalls";
 import UserTeamLine from "../components/users/UserTeamLine";
 import { Team } from "../types/team";
@@ -28,8 +28,9 @@ export default function TeamPage() {
 
     return (
         <>
-            <div className="max-w-7xl mx-auto mt-4 mb-8 p-6 bg-white shadow-md rounded-md">
-                <h1 className="text-[30px]">{team.team.team_id}</h1>
+            <div className="max-w-7xl mx-auto mt-4 mb-8 p-6 bg-white shadow-md rounded-md relative">
+                <Link className="absolute top-4 right-4 text-byuRoyal" to={`/teams/edit/${team.team.team_id}`}>Edit</Link>
+                <h1 className="text-[30px]">{team.team.team_number}</h1>
                 <h3><b>Team Name: </b>{team.team.team_name}</h3>
                 <p><b>School Year:</b></p>
                 <p>{team.team.school_year}</p>

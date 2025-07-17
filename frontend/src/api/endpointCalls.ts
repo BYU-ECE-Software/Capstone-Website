@@ -6,6 +6,7 @@ import { Coach } from "../types/coach";
 import { Student } from "../types/student";
 import { Team } from "../types/team";
 import { TeamId } from "../types/teamId";
+import { VehicleRequest } from "../types/vehicleRequest";
 
 /**
  * Export functions that do the useEffect.fetch stuff so that we don't have to do it in every component that accesses the server
@@ -99,4 +100,10 @@ export async function deleteTeam(teamId: number): Promise<any> {
   } catch (err) {
     console.error(err);
   }
+}
+
+export async function fetchVehicleRequestById(vehicleRequestId: number): Promise<VehicleRequest> {
+  const response = await fetch(`/vehicle_requests/${vehicleRequestId}`);
+  if (!response.ok) throw new Error('Failed to fetch vehicle request');
+  return await response.json();
 }

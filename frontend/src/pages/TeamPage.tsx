@@ -29,7 +29,7 @@ export default function TeamPage() {
     return (
         <>
             <div className="max-w-7xl mx-auto mt-4 mb-8 p-6 bg-white shadow-md rounded-md">
-                <h1 className="text-[30px]">{team.team.team_id}</h1>
+                <h1 className="text-[30px]">{team.team.team_number}</h1>
                 <h3><b>Team Name: </b>{team.team.team_name}</h3>
                 <p><b>School Year:</b></p>
                 <p>{team.team.school_year}</p>

@@ -11,10 +11,12 @@ CREATE TABLE IF NOT EXISTS vehicle_requests (
     destination_city NVARCHAR(255),
     trip_purpose TEXT,
     preferred_vehicle INT,
-    total DECIMAL,
+    vendor INT,
+    total DECIMAL(19,4),
     complexity ENUM('Advanced', 'Routine'),
     schedule ENUM('Immediately', 'Schedule for state change'),
     comment TEXT,
+    description_text TEXT,
     post_date DATETIME,
     method INT,
     financial_category INT,
@@ -25,5 +27,6 @@ CREATE TABLE IF NOT EXISTS vehicle_requests (
     FOREIGN KEY (vehicle_request_state_id) REFERENCES vehicle_request_state(vehicle_request_state_id),
     FOREIGN KEY (preferred_vehicle) REFERENCES preferred_vehicle(preferred_vehicle_id),
     FOREIGN KEY (method) REFERENCES method(method_id),
-    FOREIGN KEY (financial_category) REFERENCES financial_category(financial_category_id)
+    FOREIGN KEY (financial_category) REFERENCES financial_category(financial_category_id),
+    FOREIGN KEY (vendor) REFERENCES vehicle_vendors(vehicle_vendor_id)
 );

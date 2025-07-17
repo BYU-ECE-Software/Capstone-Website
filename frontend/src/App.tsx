@@ -15,6 +15,7 @@ import './App.css';
 import './styles/variables.css';
 import './styles/global.css';
 import EditTeam from './pages/EditTeam';
+import VehicleRequestLine from "./components/VehicleRequestLine"
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         </Route>
         <Route path="/purchaseRequest" element={<PurchaseRequest />} />
         <Route path="/orders" element={<OrderDashboard />} />
+        <Route path="/vehicle_requests" element={<VehicleRequestLine vehicleRequestId={1}/>} /> {/** hardcoded for now */}
         {/* Add 404 route and home page route. Also build those pages */}
       </Routes>
       <Footer />

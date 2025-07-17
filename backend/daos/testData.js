@@ -98,6 +98,7 @@ const vehicle_requests = [
         destination_city: "Las Vegas",
         trip_purpose: "No preguntes si no quieres saber",
         preferred_vehicle: 1,
+        vendor: 1,
         total: 12.66,
         complexity: "Advanced",
         schedule: "Immediately",
@@ -149,9 +150,9 @@ function createTestData() {
     for (let i = 0; i < teams.length; i++) {
         //insertLine("teams", teams[i]); // uncomment to append the contents of the teams dictionary to the teams table
     }
-    for (let i = 0; i < vehicle_vendors.length; i++) {
-        insertLine("vehicle_vendors", vehicle_vendors[i]);
-    }
+    // for (let i = 0; i < vehicle_vendors.length; i++) {
+    //     insertLine("vehicle_vendors", vehicle_vendors[i]);
+    // }
     // insertLine("preferred_vehicle", {preferred_vehicle_name: "7 Passenger Highlander"});
     // insertLine("method", {method_name: "Bookstore Card"});
     // insertLine("financial_category", {financial_category_name: "Awards & Gifts"});

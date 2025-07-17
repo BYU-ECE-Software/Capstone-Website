@@ -85,7 +85,30 @@ const vehicle_vendors = [
     {
         vehicle_vendor_name: "Samsung"
     }
-]
+];
+
+const vehicle_requests = [
+    {
+        team_id: 1,
+        author: 1,
+        vehicle_request_state_id: 1,
+        pickup_date: new Date('2025-07-16T14:00:00'),
+        dropoff_date: new Date('2025-07-16T16:00:00'),
+        valid_van_card: true,
+        destination_city: "Las Vegas",
+        trip_purpose: "No preguntes si no quieres saber",
+        preferred_vehicle: 1,
+        total: 12.66,
+        complexity: "Advanced",
+        schedule: "Immediately",
+        comment: "",
+        post_date: new Date(),
+        method: 1,
+        financial_category: 1,
+        vr_month: 7,
+        office_notes: "Note"
+    },
+];
 
 const pool = require('../db/connection');
 
@@ -128,6 +151,12 @@ function createTestData() {
     }
     for (let i = 0; i < vehicle_vendors.length; i++) {
         insertLine("vehicle_vendors", vehicle_vendors[i]);
+    }
+    // insertLine("preferred_vehicle", {preferred_vehicle_name: "7 Passenger Highlander"});
+    // insertLine("method", {method_name: "Bookstore Card"});
+    // insertLine("financial_category", {financial_category_name: "Awards & Gifts"});
+    for (let i = 0; i < vehicle_requests.length; i++) {
+        insertLine("vehicle_requests", vehicle_requests[i]);
     }
     console.log("Finished inserting test data into database");
 }

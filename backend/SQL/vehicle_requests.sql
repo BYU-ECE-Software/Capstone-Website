@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS vehicle_requests (
     office_notes TEXT,
     FOREIGN KEY (team_id) REFERENCES teams(team_id),
     FOREIGN KEY (author) REFERENCES users(user_id),
+    FOREIGN KEY (vehicle_request_state_id) REFERENCES vehicle_request_state(vehicle_request_state_id),
     FOREIGN KEY (preferred_vehicle) REFERENCES preferred_vehicle(preferred_vehicle_id),
     FOREIGN KEY (method) REFERENCES method(method_id),
     FOREIGN KEY (financial_category) REFERENCES financial_category(financial_category_id)

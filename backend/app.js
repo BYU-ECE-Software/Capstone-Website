@@ -44,6 +44,9 @@ app.use("/teams", teamRoutes);
 // register order routes
 const orderRoutes = require("./routes/orders");
 app.use("/orders", orderRoutes);
+// register vehicle_request routes
+const vehicleRequestRoutes = require("./routes/vehicleRequests");
+app.use("/vehicle_requests", vehicleRequestRoutes);
 
 app.get("/", (req, res) => {
   // find how to connect this to React. But for now this barebones will work for testing. We will need to make sure to use cookies on the frontend

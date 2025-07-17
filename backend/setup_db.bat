@@ -18,6 +18,7 @@ mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\users.sql
 mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\roles.sql
 mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\teams.sql
 mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\vehicle_vendors.sql
+mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\vehicle_request_state.sql
 mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\preferred_vehicle.sql
 mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\method.sql
 mysql -u root -p%MYSQL_PASSWORD% %DB_NAME% < sql\financial_category.sql
